@@ -1,7 +1,7 @@
 package com.lean.news.controller;
 
-import com.lean.news.entity.CustomUser;
-import com.lean.news.entity.News;
+import com.lean.news.model.entity.Publication;
+import com.lean.news.model.entity.User;
 
 import com.lean.news.service.NewsService;
 import java.util.List;
@@ -33,15 +33,15 @@ public class PortalController {
     @GetMapping("/")
     public String index(Model model) {
 
-        News latestNews = newsService.newsList().get(0); //Tomo la noticia del primer lugar de la List
+        Publication latestPublication = newsService.newsList().get(0); //Tomo la noticia del primer lugar de la List
 
-        model.addAttribute("latestNews", latestNews);
+        model.addAttribute("latestNews", latestPublication);
 
-        List<News> newsList = newsService.newsList();
+        List<Publication> publicationList = newsService.newsList();
 
-        newsList.remove(0); //remuevo la noticia del primer lugar de la List
+        publicationList.remove(0); //remuevo la noticia del primer lugar de la List
 
-        model.addAttribute("news", newsList);
+        model.addAttribute("news", publicationList);
         return "index.html";
     }
 
@@ -71,19 +71,19 @@ public class PortalController {
     @GetMapping("/home")
     public String home(HttpSession session, ModelMap model) {
 
-        News latestNews = newsService.newsList().get(0); //Tomo la noticia del primer lugar de la List
+        Publication latestPublication = newsService.newsList().get(0); //Tomo la noticia del primer lugar de la List
 
-        model.addAttribute("latestNews", latestNews);
+        model.addAttribute("latestNews", latestPublication);
 
-        List<News> newsList = newsService.newsList();
+        List<Publication> publicationList = newsService.newsList();
 
-        newsList.remove(0); //remuevo la noticia del primer lugar de la List
+        publicationList.remove(0); //remuevo la noticia del primer lugar de la List
 
-        model.addAttribute("news", newsList);
+        model.addAttribute("news", publicationList);
 
         if ((session.getAttribute("userSession") != null)) {
 
-            CustomUser logged = (CustomUser) session.getAttribute("userSession"); /// CustomUser ES LA CLASE PADRE 
+            User logged = (User) session.getAttribute("userSession"); /// CustomUser ES LA CLASE PADRE
 
             model.put("userSession", logged);
 
@@ -96,9 +96,9 @@ public class PortalController {
     @GetMapping("/category/{category}")
     public String category(@PathVariable String category, Model model) {
 
-        List<News> newsList = newsService.categoryList(category);
+        List<Publication> publicationList = newsService.categoryList(category);
 
-        model.addAttribute("news", newsList);
+        model.addAttribute("news", publicationList);
 
         return "category.html";
     }
@@ -107,9 +107,9 @@ public class PortalController {
     @GetMapping("/search")
     public String searchNewsByTitle(@RequestParam("word") String word, Model model) {
 
-        List<News> newsList = newsService.findNewsByTitle(word);
+        List<Publication> publicationList = newsService.findNewsByTitle(word);
 
-        model.addAttribute("news", newsList);
+        model.addAttribute("news", publicationList);
 
         return "category.html";
     }
@@ -118,9 +118,9 @@ public class PortalController {
     @GetMapping("/writer/{id}")
     public String filterByWriter(@PathVariable String id, Model model) {
 
-        List<News> newsList = newsService.findNewsByWriter(id);
+        List<Publication> publicationList = newsService.findNewsByWriter(id);
 
-        model.addAttribute("news", newsList);
+        model.addAttribute("news", publicationList);
 
         return "category.html";
     }

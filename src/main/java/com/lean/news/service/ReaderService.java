@@ -1,10 +1,9 @@
 package com.lean.news.service;
 
-import com.lean.news.entity.ProfileImage;
-import com.lean.news.entity.Reader;
+import com.lean.news.model.entity.ProfileImage;
 import com.lean.news.enums.Rol;
 import com.lean.news.exception.MyException;
-import com.lean.news.repository.ReaderRepository;
+
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

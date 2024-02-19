@@ -1,14 +1,9 @@
-package com.lean.news.entity;
+package com.lean.news.model.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
+import javax.persistence.*;
+
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -18,6 +13,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Data
+@NoArgsConstructor
 public class Image {
 
     @Id
@@ -25,7 +21,10 @@ public class Image {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
+    @Column(nullable = false)
     private String name;
+
+
     private String mime;  // IDENTIFICA EL FORMATO DE LA IMAGEN
 
     @Lob

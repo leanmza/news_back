@@ -4,7 +4,7 @@
  */
 package com.lean.news.controller;
 
-import com.lean.news.entity.News;
+import com.lean.news.model.entity.Publication;
 import com.lean.news.enums.Category;
 import com.lean.news.exception.MyException;
 import com.lean.news.service.NewsService;
@@ -69,9 +69,9 @@ public class NewsController {
     @GetMapping("/editNews/{id}")
     public String editNews(@PathVariable String id, ModelMap model) {
 
-        News news = newsService.getOne(id);
+        Publication publication = newsService.getOne(id);
 
-        model.addAttribute("news", news);
+        model.addAttribute("news", publication);
 
         model.addAttribute("categorys", Category.values());
         return "editNews.html";
@@ -104,13 +104,13 @@ public class NewsController {
     @GetMapping("/{id}")
     public String showNews(@PathVariable String id, Model model, Principal principal) {
 
-        News news = newsService.getOne(id); // traigo la noticia
+        Publication publication = newsService.getOne(id); // traigo la noticia
 
-        if (news.isSubscriberContent()) { // si subscriberContent es TRUE
+        if (publication.isSubscriberContent()) { // si subscriberContent es TRUE
 
             if (principal != null) { //Verifica si hay usuario logueado
 
-                model.addAttribute("news", news);
+                model.addAttribute("news", publication);
 
                 return "news.html";
 
@@ -123,7 +123,7 @@ public class NewsController {
 
         } else {
 
-            model.addAttribute("news", news);
+            model.addAttribute("news", publication);
 
             return "news.html";
         }
@@ -144,9 +144,9 @@ public class NewsController {
     @GetMapping("/manage")
     public String dashboardNews(Model model) {
 
-        List<News> newsList = newsService.newsList();
+        List<Publication> publicationList = newsService.newsList();
 
-        model.addAttribute("news", newsList);
+        model.addAttribute("news", publicationList);
 
         model.addAttribute("categorys", Category.values());
         return "manageNews.html";
@@ -157,9 +157,9 @@ public class NewsController {
     @GetMapping("/manage/dateAsc")
     public String dashboardSortDateAsc(Model model) {
 
-        List<News> newsList = newsService.newsListAsc();
+        List<Publication> publicationList = newsService.newsListAsc();
 
-        model.addAttribute("news", newsList);
+        model.addAttribute("news", publicationList);
 
         model.addAttribute("categorys", Category.values());
         return "manageNews.html";
@@ -170,9 +170,9 @@ public class NewsController {
     @GetMapping("/manage/writerAZ")
     public String dashboardSortWriterAZ(Model model) {
 
-        List<News> newsList = newsService.newsListWriterAZ();
+        List<Publication> publicationList = newsService.newsListWriterAZ();
 
-        model.addAttribute("news", newsList);
+        model.addAttribute("news", publicationList);
 
         model.addAttribute("categorys", Category.values());
         return "manageNews.html";
@@ -183,9 +183,9 @@ public class NewsController {
     @GetMapping("/manage/writerZA")
     public String dashboardSortWriterZA(Model model) {
 
-        List<News> newsList = newsService.newsListWriterZA();
+        List<Publication> publicationList = newsService.newsListWriterZA();
 
-        model.addAttribute("news", newsList);
+        model.addAttribute("news", publicationList);
 
         model.addAttribute("categorys", Category.values());
         return "manageNews.html";
@@ -196,9 +196,9 @@ public class NewsController {
     @GetMapping("/manage/{category}")
     public String dashboardCategory(@PathVariable String category, Model model) {
 
-        List<News> newsList = newsService.categoryList(category);
+        List<Publication> publicationList = newsService.categoryList(category);
 
-        model.addAttribute("news", newsList);
+        model.addAttribute("news", publicationList);
 
         model.addAttribute("categorys", Category.values());
         return "manageNews.html";
@@ -209,9 +209,9 @@ public class NewsController {
     @GetMapping("/manage/titleAZ")
     public String dashboardSortTitleAZ(Model model) {
 
-        List<News> newsList = newsService.newsListTitleAsc();
+        List<Publication> publicationList = newsService.newsListTitleAsc();
 
-        model.addAttribute("news", newsList);
+        model.addAttribute("news", publicationList);
 
         model.addAttribute("categorys", Category.values());
         return "manageNews.html";
@@ -222,9 +222,9 @@ public class NewsController {
     @GetMapping("/manage/titleZA")
     public String dashboardSortTitleZA(Model model) {
 
-        List<News> newsList = newsService.newsListTitleDesc();
+        List<Publication> publicationList = newsService.newsListTitleDesc();
 
-        model.addAttribute("news", newsList);
+        model.addAttribute("news", publicationList);
 
         model.addAttribute("categorys", Category.values());
         return "manageNews.html";

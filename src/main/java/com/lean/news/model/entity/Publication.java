@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.lean.news.entity;
+package com.lean.news.model.entity;
 
 import com.lean.news.enums.Category;
 import java.time.LocalDateTime;
@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 
@@ -24,30 +25,36 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @Data
-public class News {
+@NoArgsConstructor
+public class Publication {
 
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
-    
+
+    @Column(nullable = false)
     private String title;
     
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String body;
-  
+
+    @Column(nullable = false)
     private LocalDateTime dateLog;
     
     @OneToOne
     private Image image;
     
     @OneToOne
-    private Writer writer;
+    @Column(nullable = false)
+    private User writer;
 
     
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Category category;
-    
+
+    @Column(nullable = false)
     private boolean subscriberContent = false;
 
 }

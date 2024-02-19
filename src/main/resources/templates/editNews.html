@@ -26,7 +26,7 @@
                         </div>
 
                         <form
-                            th:action="@{/news/editNews/__${news.id}__}"
+                            th:action="@{/publication/editNews/__${publication.id}__}"
                             method="POST"
                             class="form"
                             id="formLogin"
@@ -41,7 +41,7 @@
                                     class="form-control form-control-lg"
                                     placeholder="Título"
                                     name="title"
-                                    th:value="${news.title}"
+                                    th:value="${publication.title}"
                                     />
                                 <label class="form-label" for="title">Título</label>
                             </div>
@@ -55,7 +55,7 @@
                                     rows="15" 
                                     class="form-control form-control-lg" 
                                     placeholder="Cuerpo de la noticia"
-                                    th:text="${news.body}"></textarea>
+                                    th:text="${publication.body}"></textarea>
 
                                 <label class="form-label" for="body">Cuerpo de la noticia</label>
                             </div>

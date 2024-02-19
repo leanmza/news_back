@@ -1,8 +1,8 @@
 package com.lean.news.service;
 
-import com.lean.news.entity.ProfileImage;
+import com.lean.news.model.entity.ProfileImage;
 import com.lean.news.exception.MyException;
-import com.lean.news.repository.ProfileImageRepository;
+import com.lean.news.model.repository.ProfileImageRepository;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;

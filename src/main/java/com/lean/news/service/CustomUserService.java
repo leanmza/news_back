@@ -4,15 +4,14 @@
  */
 package com.lean.news.service;
 
-import com.lean.news.entity.CustomUser;
-import com.lean.news.repository.CustomUserRepository;
+import com.lean.news.model.entity.User;
+import com.lean.news.model.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,21 +28,21 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class CustomUserService implements UserDetailsService {
 
     @Autowired
-    private CustomUserRepository customUserRepository;
+    private UserRepository userRepository;
 
     @Transactional
-    public CustomUser getOne(String id) {
-        return customUserRepository.getOne(id);
+    public User getOne(String id) {
+        return userRepository.getOne(id);
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        CustomUser customUser = customUserRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email);
 
-        System.out.println(" user rol " + customUser.getRol());
+        System.out.println(" user rol " + user.getRol());
 
-        if ((customUser == null)) {
+        if ((user == null)) {
 
             throw new UsernameNotFoundException("Usuario no encontrado con el correo: " + email);
 
@@ -51,7 +50,7 @@ public class CustomUserService implements UserDetailsService {
 
             List<GrantedAuthority> permissions = new ArrayList<>();
 
-            GrantedAuthority p = new SimpleGrantedAuthority("ROLE_" + customUser.getRol().toString());
+            GrantedAuthority p = new SimpleGrantedAuthority("ROLE_" + user.getRol().toString());
 
             permissions.add(p);
 
@@ -59,9 +58,9 @@ public class CustomUserService implements UserDetailsService {
 
             HttpSession session = attr.getRequest().getSession(true);
 
-            session.setAttribute("userSession", customUser);
+            session.setAttribute("userSession", user);
 
-            return new User(customUser.getEmail(), customUser.getPassword(), permissions);
+            return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), permissions);
 
         }
 

@@ -4,13 +4,12 @@
  */
 package com.lean.news.service;
 
-import com.lean.news.entity.Image;
-import com.lean.news.entity.News;
+import com.lean.news.model.entity.Image;
+import com.lean.news.model.entity.Publication;
 
-import com.lean.news.entity.Writer;
 import com.lean.news.enums.Category;
 import com.lean.news.exception.MyException;
-import com.lean.news.repository.NewsRepository;
+import com.lean.news.model.repository.PublicationRepository;
 
 import com.lean.news.repository.WriterRepository;
 import java.time.LocalDateTime;
@@ -30,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class NewsService {
 
     @Autowired
-    private NewsRepository newsRepository;
+    private PublicationRepository newsRepository;
 
     @Autowired
     private WriterRepository writerRepository;
@@ -44,30 +43,30 @@ public class NewsService {
 
         validate(title, body, writerEmail, category);
 
-        News news = new News();
+        Publication publication = new Publication();
 
-        news.setTitle(title);
-        news.setBody(body);
-        news.setDateLog(LocalDateTime.now());
+        publication.setTitle(title);
+        publication.setBody(body);
+        publication.setDateLog(LocalDateTime.now());
 
         if (imageFile != null) {
 
             Image image = imageService.saveImage(imageFile);
-            news.setImage(image);
+            publication.setImage(image);
         }
 
         Writer writer = writerRepository.findWriterByEmail(writerEmail);
 
-        news.setWriter(writer);
+        publication.setWriter(writer);
 
-        news.setCategory(Category.valueOf(category));
+        publication.setCategory(Category.valueOf(category));
 
         if (subscriberContent == true) {
 
-            news.setSubscriberContent(true);
+            publication.setSubscriberContent(true);
         }
 
-        newsRepository.save(news);
+        newsRepository.save(publication);
     }
 
     @Transactional
@@ -76,36 +75,36 @@ public class NewsService {
 
         validate(title, body, writerEmail, category);
 
-        Optional<News> optionalNews = newsRepository.findById(id);
+        Optional<Publication> optionalNews = newsRepository.findById(id);
 
         if (optionalNews.isPresent()) {
 
-            News news = optionalNews.get();
+            Publication publication = optionalNews.get();
 
-            news.setTitle(title);
-            news.setBody(body);
+            publication.setTitle(title);
+            publication.setBody(body);
 
             if (!(imageFile.isEmpty())) { ///Comprueba si el imageFile no está vacio 
 
-                String idImage = news.getImage().getId(); // idImage toma el valor del id de la imagen existente
+                String idImage = publication.getImage().getId(); // idImage toma el valor del id de la imagen existente
 
                 Image image = imageService.actualizeImage(idImage, imageFile); // Actualiza la imagen en su repo con el id existente y el nuevo archivo
 
-                news.setImage(image); //Establece la imagen nueva
+                publication.setImage(image); //Establece la imagen nueva
 
             }
 
-            news.setCategory(Category.valueOf(category));
+            publication.setCategory(Category.valueOf(category));
 
             if (subscriberContent == false) {
 
-                news.setSubscriberContent(false);
+                publication.setSubscriberContent(false);
             } else if (subscriberContent == true) {
 
-                news.setSubscriberContent(true);
+                publication.setSubscriberContent(true);
             }
 
-            newsRepository.save(news);
+            newsRepository.save(publication);
         }
     }
 
@@ -150,98 +149,98 @@ public class NewsService {
     public void deleteNews(String id) throws MyException {
 
         System.out.println("id News " + id);
-        Optional<News> optionalNews = newsRepository.findById(id);
+        Optional<Publication> optionalNews = newsRepository.findById(id);
         if (optionalNews.isPresent()) {
-            News news = optionalNews.get();
-            newsRepository.delete(news);
+            Publication publication = optionalNews.get();
+            newsRepository.delete(publication);
         }
     }
 
     @Transactional(readOnly = true)
-    public List<News> newsList() { //Muestra la noticia más nueva primero
-        List<News> newsList = new ArrayList();
+    public List<Publication> newsList() { //Muestra la noticia más nueva primero
+        List<Publication> publicationList = new ArrayList();
 
-        newsList = newsRepository.listOrderedNews();
+        publicationList = newsRepository.listOrderedNews();
 
-        return newsList;
+        return publicationList;
 
     }
 
     @Transactional
-    public News getOne(String id) {
+    public Publication getOne(String id) {
         return newsRepository.getOne(id);
     }
 
     @Transactional(readOnly = true)
-    public List<News> findNewsByTitle(String word) { //Muestra las noticias con la palabra buscada
-        List<News> newsList = new ArrayList();
-        newsList = newsRepository.findTitleByWord(word);
-        return newsList;
+    public List<Publication> findNewsByTitle(String word) { //Muestra las noticias con la palabra buscada
+        List<Publication> publicationList = new ArrayList();
+        publicationList = newsRepository.findTitleByWord(word);
+        return publicationList;
     }
 
     @Transactional(readOnly = true)
-    public List<News> categoryList(String category) { //Muestra muestra las noticias de la category con la noticia más nueva primero
+    public List<Publication> categoryList(String category) { //Muestra muestra las noticias de la category con la noticia más nueva primero
 
-        List<News> newsList = new ArrayList();
+        List<Publication> publicationList = new ArrayList();
 
         Category categoryEnum = Category.valueOf(category.toUpperCase());// Category viene en minúsculas del HTML, lo paso a mayúsculas 
 
-        newsList = newsRepository.listNewsByCategory(categoryEnum);
+        publicationList = newsRepository.listNewsByCategory(categoryEnum);
 
-        return newsList;
+        return publicationList;
     }
 
     @Transactional(readOnly = true)
-    public List<News> findNewsByWriter(String id) { //Muestra las noticias con la palabra buscada
+    public List<Publication> findNewsByWriter(String id) { //Muestra las noticias con la palabra buscada
         Writer writer = writerRepository.findById(id).get();
 
-        List<News> newsList = new ArrayList();
-        newsList = newsRepository.listNewsByWriter(writer);
-        return newsList;
+        List<Publication> publicationList = new ArrayList();
+        publicationList = newsRepository.listNewsByWriter(writer);
+        return publicationList;
     }
 
     @Transactional(readOnly = true)
-    public List<News> newsListAsc() { //Muestra la noticia más nueva primero
-        List<News> newsList = new ArrayList();
+    public List<Publication> newsListAsc() { //Muestra la noticia más nueva primero
+        List<Publication> publicationList = new ArrayList();
 
-        newsList = newsRepository.listOrderedNewsAsc();
+        publicationList = newsRepository.listOrderedNewsAsc();
 
-        return newsList;
+        return publicationList;
     }
 
     @Transactional(readOnly = true)
-    public List<News> newsListWriterAZ() { //Muestra la noticia más nueva primero
-        List<News> newsList = new ArrayList();
+    public List<Publication> newsListWriterAZ() { //Muestra la noticia más nueva primero
+        List<Publication> publicationList = new ArrayList();
 
-        newsList = newsRepository.orderByWriterDesc();
+        publicationList = newsRepository.orderByWriterDesc();
 
-        return newsList;
+        return publicationList;
     }
 
     @Transactional(readOnly = true)
-    public List<News> newsListWriterZA() { //Muestra la noticia más nueva primero
-        List<News> newsList = new ArrayList();
+    public List<Publication> newsListWriterZA() { //Muestra la noticia más nueva primero
+        List<Publication> publicationList = new ArrayList();
 
-        newsList = newsRepository.orderByWriterAsc();
+        publicationList = newsRepository.orderByWriterAsc();
 
-        return newsList;
+        return publicationList;
     }
 
     @Transactional(readOnly = true)
-    public List<News> newsListTitleDesc() { //Muestra la noticia más nueva primero
-        List<News> newsList = new ArrayList();
+    public List<Publication> newsListTitleDesc() { //Muestra la noticia más nueva primero
+        List<Publication> publicationList = new ArrayList();
 
-        newsList = newsRepository.orderByTitleDesc();
+        publicationList = newsRepository.orderByTitleDesc();
 
-        return newsList;
+        return publicationList;
     }
 
     @Transactional(readOnly = true)
-    public List<News> newsListTitleAsc() { //Muestra la noticia más nueva primero
-        List<News> newsList = new ArrayList();
+    public List<Publication> newsListTitleAsc() { //Muestra la noticia más nueva primero
+        List<Publication> publicationList = new ArrayList();
 
-        newsList = newsRepository.orderByTitleAsc();
+        publicationList = newsRepository.orderByTitleAsc();
 
-        return newsList;
+        return publicationList;
     }
 }

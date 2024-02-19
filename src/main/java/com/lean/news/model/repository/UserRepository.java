@@ -2,20 +2,22 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package com.lean.news.repository;
+package com.lean.news.model.repository;
 
-import com.lean.news.entity.CustomUser;
+import com.lean.news.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.Optional;
 
 /**
  *
  * @author Lean
  */
-public interface CustomUserRepository extends JpaRepository<CustomUser, String> {
+public interface UserRepository extends JpaRepository<User, String> {
 
-    @Query("SELECT cu FROM CustomUser cu WHERE cu.email = :email")
-    public CustomUser findUserByEmail(@Param("email") String email);
+    Optional<User> findUserByEmail(String email);
+
 
 }
