@@ -9,30 +9,30 @@
 
 
         <main>
-            <div class="container-fluid divMain news">
+            <div class="container-fluid divMain publication">
 
                 <div class="categoryDiv">
-                    <a th:href="@{/category/__${news.category}__}" class="link"><h6 th:text="${news.category}"></h6></a> 
+                    <a th:href="@{/category/__${publication.category}__}" class="link"><h6 th:text="${publication.category}"></h6></a>
                 </div>
 
                 <div class="divTitle row">
-                    <h1 th:text="${news.title}"></h1>
+                    <h1 th:text="${publication.title}"></h1>
                 </div>
                 <div class="divWriter">
-                    <a th:href="@{/writer/__${news.writer.id}__}" class="link"><h6 th:text="${news.writer.name}"></h6></a>
+                    <a th:href="@{/writer/__${publication.writer.id}__}" class="link"><h6 th:text="${publication.writer.name}"></h6></a>
                 </div>
                 <div class="divDate col-2">
-                    <p th:text="${news.dateLog}"></p>
+                    <p th:text="${publication.dateLog}"></p>
                 </div>
                         <!-- SE MUESTRA SI HAY UN WRITER O EDITOR LOGUEADO  -->
                 <div class="divButton row" sec:authorize="hasRole ('WRITER') OR hasRole('EDITOR')" > 
                     
                     <div class="col-12">
-                    <a th:href="@{/news/editNews/__${news.id}__}" class="link">
+                    <a th:href="@{/publication/editNews/__${publication.id}__}" class="link">
                         <i class="fa-regular fa-pen-to-square"></i></a
                     >
                 
-                    <a th:href="@{/news/deleteNews/__${news.id}__}" class="link">
+                    <a th:href="@{/publication/deleteNews/__${publication.id}__}" class="link">
                         <i class="fa-solid fa-trash-can"></i></a
                     >
 
@@ -42,15 +42,15 @@
 <!-- IMAGE NEWS -->
                 <div class="divImage row">
                     <img
-                        th:if="${news.image != null}"
-                        th:src="@{/image/news/__${news.id}__}"
+                        th:if="${publication.image != null}"
+                        th:src="@{/image/publication/__${publication.id}__}"
                         class=""
                         alt="..."
                         />
                 </div>
 <!-- BODY NEWS -->
                 <div class="divBody row">
-                    <p th:text="${news.body}" class="bodyNews"></p>
+                    <p th:text="${publication.body}" class="bodyNews"></p>
                 </div>
 
             </div>

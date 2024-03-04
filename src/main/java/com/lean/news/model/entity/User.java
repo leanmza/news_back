@@ -48,4 +48,7 @@ public class User implements Serializable {
     @OneToOne
     private ProfileImage profileImage;
 
+    @Column(nullable = false)
+    private boolean active;
+
 }

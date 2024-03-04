@@ -11,7 +11,7 @@ import com.lean.news.enums.Category;
 import com.lean.news.exception.MyException;
 import com.lean.news.model.repository.PublicationRepository;
 
-import com.lean.news.repository.WriterRepository;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class NewsService {
 
-    @Autowired
+   /* @Autowired
     private PublicationRepository newsRepository;
-
-    @Autowired
-    private WriterRepository writerRepository;
 
     @Autowired
     private ImageService imageService;
@@ -107,8 +104,8 @@ public class NewsService {
             newsRepository.save(publication);
         }
     }
-
-    private void validate(String title, String body, String writerEmail, String category) throws MyException {
+*/
+  /*  private void validate(String title, String body, String writerEmail, String category) throws MyException {
         if (title.isEmpty() || title == null) {
             throw new MyException("El título no puede estar vacío o ser nulo");
         }
@@ -125,9 +122,9 @@ public class NewsService {
             throw new MyException("La categoría ingresada no es válida");
         }
 
-    }
+    }*/
 
-    private boolean checkCategory(String category) {
+/*    private boolean checkCategory(String category) {
 
         boolean check = false;
 
@@ -143,9 +140,9 @@ public class NewsService {
             }
         }
         return check;
-    }
+    }*/
 
-    @Transactional
+/*    @Transactional
     public void deleteNews(String id) throws MyException {
 
         System.out.println("id News " + id);
@@ -154,9 +151,9 @@ public class NewsService {
             Publication publication = optionalNews.get();
             newsRepository.delete(publication);
         }
-    }
+    }*/
 
-    @Transactional(readOnly = true)
+/*    @Transactional(readOnly = true)
     public List<Publication> newsList() { //Muestra la noticia más nueva primero
         List<Publication> publicationList = new ArrayList();
 
@@ -164,14 +161,14 @@ public class NewsService {
 
         return publicationList;
 
-    }
+    }*/
 
-    @Transactional
+/*    @Transactional
     public Publication getOne(String id) {
         return newsRepository.getOne(id);
-    }
+    }*/
 
-    @Transactional(readOnly = true)
+/*    @Transactional(readOnly = true)
     public List<Publication> findNewsByTitle(String word) { //Muestra las noticias con la palabra buscada
         List<Publication> publicationList = new ArrayList();
         publicationList = newsRepository.findTitleByWord(word);
@@ -188,8 +185,8 @@ public class NewsService {
         publicationList = newsRepository.listNewsByCategory(categoryEnum);
 
         return publicationList;
-    }
-
+    }*/
+/*
     @Transactional(readOnly = true)
     public List<Publication> findNewsByWriter(String id) { //Muestra las noticias con la palabra buscada
         Writer writer = writerRepository.findById(id).get();
@@ -197,18 +194,18 @@ public class NewsService {
         List<Publication> publicationList = new ArrayList();
         publicationList = newsRepository.listNewsByWriter(writer);
         return publicationList;
-    }
+    }*/
 
-    @Transactional(readOnly = true)
+/*    @Transactional(readOnly = true)
     public List<Publication> newsListAsc() { //Muestra la noticia más nueva primero
         List<Publication> publicationList = new ArrayList();
 
         publicationList = newsRepository.listOrderedNewsAsc();
 
         return publicationList;
-    }
+    }*/
 
-    @Transactional(readOnly = true)
+/*    @Transactional(readOnly = true)
     public List<Publication> newsListWriterAZ() { //Muestra la noticia más nueva primero
         List<Publication> publicationList = new ArrayList();
 
@@ -242,5 +239,5 @@ public class NewsService {
         publicationList = newsRepository.orderByTitleAsc();
 
         return publicationList;
-    }
+    }*/
 }

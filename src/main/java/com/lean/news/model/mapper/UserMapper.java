@@ -1,6 +1,8 @@
 package com.lean.news.model.mapper;
 
 import com.lean.news.model.entity.User;
+import com.lean.news.rest.request.CreateUserRequest;
+import com.lean.news.rest.response.UserResponse;
 import org.mapstruct.Mapper;
 
 import java.util.List;

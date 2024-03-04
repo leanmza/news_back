@@ -1,7 +1,8 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+ *//*
+
 package com.lean.news.controller;
 
 import com.lean.news.model.entity.Publication;
@@ -23,10 +24,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+*/
 /**
  *
  * @author Lean
- */
+ *//*
+
 @Controller
 @RequestMapping("/news")
 public class NewsController {
@@ -231,3 +234,4 @@ public class NewsController {
     }
 
 }
+*/

@@ -22,32 +22,17 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PublicationRepository extends JpaRepository<Publication, String> {
 
-    @Query("SELECT ne FROM News ne WHERE ne.title LIKE %:word%")
+    @Query("SELECT p FROM Publication p WHERE p.title LIKE %:word%")
     public List<Publication> findTitleByWord(@Param("word") String word);
 
-    @Query("SELECT ne FROM News ne ORDER BY ne.dateLog DESC")
-    public List<Publication> listOrderedNews();
+    @Query("SELECT p FROM Publication p WHERE p.author = :author")
+    public List<Publication> findByAuthor(@Param("author") String author);
 
-    @Query("SELECT  ne FROM News ne WHERE ne.category = :category ORDER BY ne.dateLog DESC")
-    public List<Publication> listNewsByCategory(@Param("category") Category categoryEnum);
+/*    @Query("SELECT ne FROM News ne ORDER BY ne.dateLog DESC")
+    public List<Publication> listOrderedNews();*/
 
-    @Query("SELECT ne FROM News ne WHERE ne.writer = :writer")
-    public List<Publication> listNewsByWriter(@Param("writer") User writer);
+//    @Query("SELECT  ne FROM News ne WHERE ne.category = :category ORDER BY ne.dateLog DESC")
+//    public List<Publication> findByCategory(@Param("category") Category categoryEnum);
 
-//      QUERYS PARA ORDENAR TABLA DE ADMINISTRAR NEWS
-    @Query("SELECT ne FROM News ne ORDER BY ne.title DESC")
-    public List<Publication> orderByTitleDesc(); //ordena por título Z-A
-
-    @Query("SELECT ne FROM News ne ORDER BY ne.title ASC")
-    public List<Publication> orderByTitleAsc(); //ordena por título A-Z
-
-    @Query("SELECT ne FROM News ne ORDER BY ne.writer DESC")
-    public List<Publication> orderByWriterDesc(); //ordena por writer Z-A
-
-    @Query("SELECT ne FROM News ne ORDER BY ne.writer ASC")
-    public List<Publication> orderByWriterAsc(); //ordena por writer A-Z
-
-    @Query("SELECT ne FROM News ne ORDER BY ne.dateLog ASC")
-    public List<Publication> listOrderedNewsAsc();
 
 }

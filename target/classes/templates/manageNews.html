@@ -29,11 +29,11 @@
           
                   <ul class="dropdown-menu">
                     <li>
-                      <a th:href="@{/news/manage/titleAZ}" class="nav-link link linkLog categoryFilter">
+                      <a th:href="@{/publication/manage/titleAZ}" class="nav-link link linkLog categoryFilter">
                       A-Z</a>
                       </li>
                     <li>
-                    <a th:href="@{/news/manage/titleZA}" class="nav-link link linkLog categoryFilter">
+                    <a th:href="@{/publication/manage/titleZA}" class="nav-link link linkLog categoryFilter">
                      Z-A</a>
                     </li>
                 </div>
@@ -51,7 +51,7 @@
           
                   <ul class="dropdown-menu">
                     <li th:each="category : ${categorys}">
-                      <a th:href="@{/news/manage/__${category}__}" class="nav-link link categoryLink categoryFilter" th:text="${category}"></a>
+                      <a th:href="@{/publication/manage/__${category}__}" class="nav-link link categoryLink categoryFilter" th:text="${category}"></a>
                       </li>
                     <li>
 
@@ -71,11 +71,11 @@
           
                   <ul class="dropdown-menu">
                     <li>
-                      <a th:href="@{/news/manage/writerAZ}" class="nav-link link linkLog categoryFilter">
+                      <a th:href="@{/publication/manage/writerAZ}" class="nav-link link linkLog categoryFilter">
                       A-Z</a>
                       </li>
                     <li>
-                    <a th:href="@{/news/manage/writerZA}" class="nav-link link linkLog categoryFilter">
+                    <a th:href="@{/publication/manage/writerZA}" class="nav-link link linkLog categoryFilter">
                      Z-A</a>
                     </li>
                   </div>
@@ -94,11 +94,11 @@
           
                   <ul class="dropdown-menu text-small">
                     <li>
-                      <a th:href="@{/news/manage}" class="nav-link link linkLog categoryFilter">
+                      <a th:href="@{/publication/manage}" class="nav-link link linkLog categoryFilter">
                        Más Nuevos</a>
                       </li>
                     <li>
-                    <a th:href="@{/news/manage/dateAsc}" class="nav-link link linkLog categoryFilter">
+                    <a th:href="@{/publication/manage/dateAsc}" class="nav-link link linkLog categoryFilter">
                      Más Viejos</a>
                     </li>
                   </div>
@@ -127,19 +127,19 @@
           </thead>
 
           <tbody >
-            <tr th:each="news : ${news}">
-              <td th:text="${news.title}"></td>
-              <td ><p th:text="${news.body}" class="tableLongText"></p></td>
-              <td th:text="${news.category}"></td>
-              <td th:text="${news.writer.name}"></td>
-              <td th:text="${news.dateLog}"></td>
+            <tr th:each="publication : ${publication}">
+              <td th:text="${publication.title}"></td>
+              <td ><p th:text="${publication.body}" class="tableLongText"></p></td>
+              <td th:text="${publication.category}"></td>
+              <td th:text="${publication.writer.name}"></td>
+              <td th:text="${publication.dateLog}"></td>
               <td>
                 <div class="col-12">
-                  <a th:href="@{/news/editNews/__${news.id}__}" class="link">
+                  <a th:href="@{/publication/editNews/__${publication.id}__}" class="link">
                     <i class="fa-regular fa-pen-to-square"></i
                   ></a>
 
-                  <a th:href="@{/news/deleteNews/__${news.id}__}" class="link">
+                  <a th:href="@{/publication/deleteNews/__${publication.id}__}" class="link">
                     <i class="fa-solid fa-trash-can"></i
                   ></a>
                 </div>

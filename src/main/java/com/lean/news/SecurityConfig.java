@@ -4,9 +4,7 @@
  */
 package com.lean.news;
 
-import com.lean.news.service.CustomUserService;
-import com.lean.news.service.ReaderService;
-import com.lean.news.service.WriterService;
+import com.lean.news.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -28,19 +26,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    public ReaderService readerService;
-
-    @Autowired
-    public WriterService writerService;
-
-    @Autowired
-    public CustomUserService customUserService;
+    public UserService userService;
 
 
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 
-        auth.userDetailsService(customUserService)
+        auth.userDetailsService(userService)
                 .passwordEncoder(new BCryptPasswordEncoder());
     }
 

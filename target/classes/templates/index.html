@@ -10,24 +10,24 @@
     <main>
       <div class="container-fluid divMain">
         <div class="row rowLastestNews">
-          <div class="superCard card" th:if="${latestNews != null} ">
+          <div class="superCard card" th:if="${latestPublication != null} ">
             <img
-              th:if="${latestNews.image != null}"
-              th:src="@{/image/news/__${latestNews.id}__}"
+              th:if="${latestPublication.image != null}"
+              th:src="@{/image/publication/__${latestPublication.id}__}"
               class="card-img-top cardImg"
               alt="..."
             />
 
             <div class="card-img-overlay">
-              <a th:href="@{/category/__${latestNews.category}__}" class="link"
-                ><h6 class="card-category" th:text="${latestNews.category}"></h6
+              <a th:href="@{/category/__${latestPublication.category}__}" class="link"
+                ><h6 class="card-category" th:text="${latestPublication.category}"></h6
               ></a>
-              <h6 th:if="${latestNews.subscriberContent == true} ">
+              <h6 th:if="${latestPublication.subscriberContent == true} ">
                 Exclusivo suscriptores
                 <i class="fa-solid fa-star exclusiveIcon"></i>
               </h6>
-              <a th:href="@{/news/__${latestNews.id}__}" class="link"
-                ><h2 class="card-title" th:text="${latestNews.title}"></h2
+              <a th:href="@{/publication/__${latestPublication.id}__}" class="link"
+                ><h2 class="card-title" th:text="${latestPublication.title}"></h2
               ></a>
             </div>
           </div>
@@ -35,26 +35,26 @@
         <div class="row row-cols-1">
           <div
             class="col-12 col-sm-6 col-md-4 col-lg-3 colCard"
-            th:each="news : ${news}"
+            th:each="publication : ${publication}"
           >
             <div class="card h-100">
               <img
-                th:if="${news.image != null}"
-                th:src="@{/image/news/__${news.id}__}"
+                th:if="${publication.image != null}"
+                th:src="@{/image/publication/__${publication.id}__}"
                 class="card-img-top cardImg"
                 alt="..."
               />
 
               <div class="card-img-overlay">
-                <a th:href="@{/category/__${news.category}__}" class="link"
-                  ><h6 class="card-category" th:text="${news.category}"></h6
+                <a th:href="@{/category/__${publication.category}__}" class="link"
+                  ><h6 class="card-category" th:text="${publication.category}"></h6
                 ></a>
-                <h6 th:if="${news.subscriberContent == true} ">
+                <h6 th:if="${publication.subscriberContent == true} ">
                   Exclusivo suscriptores
                   <i class="fa-solid fa-star exclusiveIcon"></i>
                 </h6>
-                <a th:href="@{/news/__${news.id}__}" class="link"
-                  ><h2 class="card-title" th:text="${news.title}"></h2
+                <a th:href="@{/publication/__${publication.id}__}" class="link"
+                  ><h2 class="card-title" th:text="${publication.title}"></h2
                 ></a>
               </div>
             </div>

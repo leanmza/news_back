@@ -1,3 +1,4 @@
+/*
 package com.lean.news.controller;
 
 import com.lean.news.model.entity.Publication;
@@ -18,10 +19,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+*/
 /**
  *
  * @author Lean
- */
+ *//*
+
 @Controller
 @RequestMapping("/")
 public class PortalController {
@@ -126,3 +129,4 @@ public class PortalController {
     }
 
 }
+*/

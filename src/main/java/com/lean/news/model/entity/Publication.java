@@ -5,22 +5,17 @@
 package com.lean.news.model.entity;
 
 import com.lean.news.enums.Category;
-import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
 
+import java.time.LocalDateTime;
+import javax.persistence.*;
+
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 
 /**
- *
  * @author Lean
  */
 @Entity
@@ -35,26 +30,32 @@ public class Publication {
 
     @Column(nullable = false)
     private String title;
-    
+
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String body;
 
     @Column(nullable = false)
-    private LocalDateTime dateLog;
-    
+    private LocalDateTime creationDate;
+
     @OneToOne
     private Image image;
-    
-    @OneToOne
-    @Column(nullable = false)
-    private User writer;
 
-    
+    @ManyToOne
+    @JoinColumn(name="USER_CREATOR", nullable = false)
+    private User author;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Category category;
 
     @Column(nullable = false)
-    private boolean subscriberContent = false;
+    private boolean subscriberContent;
 
+    @NotNull
+    @Column( nullable = false)
+    private boolean deleted;
+
+    @NotNull
+    @Column(nullable = false)
+    private Integer visualizations;
 }
