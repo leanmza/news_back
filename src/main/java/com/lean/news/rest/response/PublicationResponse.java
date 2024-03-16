@@ -24,7 +24,7 @@ public class PublicationResponse {
 
     private LocalDateTime creationDate;
 
-    private Image image;
+//    private Image image;
 
     private User author;
 

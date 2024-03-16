@@ -32,7 +32,7 @@ public interface PublicationRepository extends JpaRepository<Publication, String
     public List<Publication> listOrderedNews();*/
 
 //    @Query("SELECT  ne FROM News ne WHERE ne.category = :category ORDER BY ne.dateLog DESC")
-//    public List<Publication> findByCategory(@Param("category") Category categoryEnum);
+//    public List<Publication> findByCategory(@Param("category") Category category);
 
 
 }

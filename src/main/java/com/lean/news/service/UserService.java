@@ -117,6 +117,8 @@ public class UserService implements IUserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UserNotFound {
+        System.out.println("email");
+        System.out.println(email);
 
          Optional<User> optionalUser = findByEmail(email);
 

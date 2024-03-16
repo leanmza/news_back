@@ -1,6 +1,5 @@
 package com.lean.news.model.mapper;
 
-import com.lean.news.enums.Category;
 import com.lean.news.model.entity.Publication;
 import com.lean.news.rest.request.CreatePublicationRequest;
 import com.lean.news.rest.response.PublicationResponse;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-04T11:51:49-0300",
+    date = "2024-03-15T18:31:39-0300",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.10 (Amazon.com Inc.)"
 )
 @Component
@@ -25,11 +24,10 @@ public class PublicationMapperImpl implements PublicationMapper {
 
         Publication publication = new Publication();
 
+        publication.setTitle( createPublicationRequest.getTitle() );
         publication.setBody( createPublicationRequest.getBody() );
         publication.setAuthor( createPublicationRequest.getAuthor() );
-        if ( createPublicationRequest.getCategory() != null ) {
-            publication.setCategory( Enum.valueOf( Category.class, createPublicationRequest.getCategory() ) );
-        }
+        publication.setCategory( createPublicationRequest.getCategory() );
         publication.setSubscriberContent( createPublicationRequest.isSubscriberContent() );
 
         return publication;
@@ -61,7 +59,6 @@ public class PublicationMapperImpl implements PublicationMapper {
         publicationResponse.setTitle( publication.getTitle() );
         publicationResponse.setBody( publication.getBody() );
         publicationResponse.setCreationDate( publication.getCreationDate() );
-        publicationResponse.setImage( publication.getImage() );
         publicationResponse.setAuthor( publication.getAuthor() );
         publicationResponse.setCategory( publication.getCategory() );
         publicationResponse.setSubscriberContent( publication.isSubscriberContent() );

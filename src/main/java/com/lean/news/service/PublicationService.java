@@ -36,12 +36,17 @@ public class PublicationService implements IPublicationService {
 
     @Override
     public PublicationResponse create(CreatePublicationRequest createPublicationRequest) {
+
         Publication publication = publicationMapper.toPublication(createPublicationRequest);
+
         publication.setVisualizations(0);
         publication.setDeleted(false);
         publication.setCreationDate(LocalDateTime.now());
-        publication.setAuthor(getUserLogged());
-        return null;
+       //publication.setAuthor(getUserLogged());
+        publicationRepository.save(publication);
+
+
+        return publicationMapper.toPublicationResponse(publication);
     }
 
 

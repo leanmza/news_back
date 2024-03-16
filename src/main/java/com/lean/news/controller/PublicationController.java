@@ -28,10 +28,11 @@ public class PublicationController {
     @PostMapping(path = "/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PublicationResponse> create(@RequestPart("publication") @Valid CreatePublicationRequest createPublicationRequest) {
+    public ResponseEntity<PublicationResponse> create(/*@RequestPart("publication")*/ @Valid @RequestBody CreatePublicationRequest createPublicationRequest) {
         PublicationResponse publicationResponse = publicationService.create(createPublicationRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
     }
+
     @PatchMapping(value ="{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
