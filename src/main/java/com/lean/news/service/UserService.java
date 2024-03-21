@@ -23,6 +23,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,32 +116,34 @@ public class UserService implements IUserService, UserDetailsService {
         return user;
     }
 
+    public List<String> getRoleForUser(String email) {
+        Optional<User> userOptional = userRepository.findUserByEmail(email);
+
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+
+            List<String> roles = new ArrayList<>();
+            roles.add(user.getRol().name());
+
+            return roles;
+
+        }
+        return Collections.singletonList("USER");
+    }
+
     @Override
-    public UserDetails loadUserByUsername(String email) throws UserNotFound {
-        System.out.println("email");
-        System.out.println(email);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("No user found with email: " + email));
 
-         Optional<User> optionalUser = findByEmail(email);
 
-         if (optionalUser.isEmpty()){
-             throw new UserNotFound("Usuario no encontrado con el correo: " + email);
-         } else {
-             User user = optionalUser.get();
+        List<GrantedAuthority> authorities =
+                Collections.singletonList(new SimpleGrantedAuthority(user.getRol().name()));
 
-             List<GrantedAuthority> permissions = new ArrayList<>();
-
-             GrantedAuthority p = new SimpleGrantedAuthority("ROLE_" + user.getRol().toString());
-
-             permissions.add(p);
-
-             ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-
-             HttpSession session = attr.getRequest().getSession(true);
-
-             session.setAttribute("userSession", user);
-
-             return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), permissions);
-         }
-
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                "N/A",  // Contraseña ficticia o dummy
+                authorities  // role convertido a GrantedAuthority
+        );
     }
 }

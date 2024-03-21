@@ -26,6 +26,7 @@ com\lean\news\security\SecurityConfig.class
 com\lean\news\security\jwt\JwtFilter.class
 com\lean\news\model\repository\UserRepository.class
 com\lean\news\rest\request\UpdatePublicationRequest.class
+com\lean\news\controller\AuthController.class
 com\lean\news\exception\UserNotFound.class
 com\lean\news\rest\response\PublicationResponse.class
 com\lean\news\rest\response\ListUsersResponse.class

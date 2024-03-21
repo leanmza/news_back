@@ -83,17 +83,10 @@ public class SecurityConfig/* extends WebSecurityConfigurerAdapter */{
 
     RequestMatcher publicUrls = new OrRequestMatcher(
             new AntPathRequestMatcher("/**"),
-            new AntPathRequestMatcher("/login")
+            new AntPathRequestMatcher("/login"),
+            new AntPathRequestMatcher("/auth/**")
     );
 
-/*    RequestMatcher userUrls = new OrRequestMatcher(
-            new AntPathRequestMatcher("/users/**")
-    );
-
-    RequestMatcher adminUrls = new OrRequestMatcher(
-            new AntPathRequestMatcher("/admin/**")
-
-    );*/
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
