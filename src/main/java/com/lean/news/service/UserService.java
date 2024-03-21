@@ -104,7 +104,7 @@ public class UserService implements IUserService, UserDetailsService {
 
         String email = updateUserRequest.getEmail();
         if (email != null) {
-            user.setEmail(email);
+            user.setUsername(email);
         }
 
         String password = updateUserRequest.getPassword();
@@ -139,7 +139,7 @@ public class UserService implements IUserService, UserDetailsService {
 
              session.setAttribute("userSession", user);
 
-             return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), permissions);
+             return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), permissions);
          }
 
     }
