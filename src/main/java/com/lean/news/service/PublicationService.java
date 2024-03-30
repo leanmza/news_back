@@ -1,8 +1,9 @@
 package com.lean.news.service;
 
-import com.lean.news.enums.Category;
+
 import com.lean.news.exception.EntityNotFound;
 import com.lean.news.exception.UserNotFound;
+import com.lean.news.model.entity.Category;
 import com.lean.news.model.entity.Publication;
 import com.lean.news.model.entity.User;
 import com.lean.news.model.mapper.PublicationMapper;
@@ -13,6 +14,8 @@ import com.lean.news.rest.response.ListPublicationResponse;
 import com.lean.news.rest.response.PublicationResponse;
 import com.lean.news.service.interfaces.IPublicationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -33,20 +36,30 @@ public class PublicationService implements IPublicationService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CategoryService categoryService;
+
 
     @Override
-    public PublicationResponse create(CreatePublicationRequest createPublicationRequest) {
+    public ResponseEntity<?> create(CreatePublicationRequest createPublicationRequest) {
 
         Publication publication = publicationMapper.toPublication(createPublicationRequest);
 
+        System.out.println("CREATEPUBLICATIONREQUEST" + createPublicationRequest);
+
+        Category category = categoryService.findCategoryByName(createPublicationRequest.getCategory());
+
+        System.out.println("category (deberia tener un ID)" + category);
+        publication.setCategory(category);
         publication.setVisualizations(0);
         publication.setDeleted(false);
         publication.setCreationDate(LocalDateTime.now());
-       //publication.setAuthor(getUserLogged());
+        publication.setAuthor(getUserLogged());
         publicationRepository.save(publication);
 
+        PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publication);
 
-        return publicationMapper.toPublicationResponse(publication);
+        return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
     }
 
 
@@ -105,17 +118,7 @@ public class PublicationService implements IPublicationService {
 
     }
 
-//    @Override
-//    public ListPublicationResponse findByCategory(String category) {
-//        List<Publication> listPublications = publicationRepository.findByCategory(Category.valueOf(category));
-//        if (listPublications.isEmpty()) {
-//            throw new EntityNotFound("No hay publicaciones con ese autor");
-//        } else {
-//            ListPublicationResponse listPublicationResponse = new ListPublicationResponse();
-//            listPublicationResponse.setPublications(publicationMapper.toListPublicationResponse(listPublications));
-//            return listPublicationResponse;
-//        }
-//    }
+
 
     private User getUserLogged() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -155,7 +158,8 @@ public class PublicationService implements IPublicationService {
 
         String category = updatePublicationRequest.getCategory();
         if (category != null) {
-            publication.setCategory(Category.valueOf(category));
+
+            publication.setCategory(getCategory(category));
         }
 
         boolean subscriberContent = updatePublicationRequest.isSubscriberContent();
@@ -165,5 +169,12 @@ public class PublicationService implements IPublicationService {
             publication.setSubscriberContent(false);
         }
         return publication;
+    }
+
+    private Category getCategory(String name) {
+
+        Category category = categoryService.findCategoryByName(name);
+
+        return category;
     }
 }

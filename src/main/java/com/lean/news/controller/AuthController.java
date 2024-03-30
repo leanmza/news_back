@@ -47,32 +47,36 @@ public class AuthController {
     }
 
 
-@PostMapping("/loginCheck")
+    @PostMapping("/loginCheck")
     public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) throws GeneralSecurityException, IOException {
 
         // Obtener el correo electrónico y la contraseña del cuerpo de la solicitud
         String email = credentials.get("email");
         String password = credentials.get("password");
 
-        if (email == null || password == null || email.isEmpty() || password.isEmpty()){
+
+        if (email == null || password == null || email.isEmpty() || password.isEmpty()) {
             return ResponseEntity.badRequest().body("Correo electrónico o contraseña no proporcionados");
         }
 
         UserDetails userDetails = userService.loadUserByUsername(email);
 
-        if(userDetails != null) {
+        if (userDetails != null) {
 
             List<String> roles = userService.getRoleForUser(email);
-            //Generar el token JWT
 
+            //Generar el token JWT
             String jwtToken = tokenUtil.generateToken(email, roles);
 
+            System.out.println("USER " + userDetails);
+            System.out.println("JWt " + jwtToken);
             //Crear un objeto Json con el token JWT
             Map<String, Object> responseData = new HashMap<>();
             responseData.put("token", jwtToken);
             responseData.put("userDetails", userDetails);
 
-            return ResponseEntity.ok(responseData);
+            System.out.println("responseData " + responseData);
+            return ResponseEntity.ok().header("Authorization", "Bearer " + jwtToken).body(responseData);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Correo electrónico o contraseña incorrectos");
         }

@@ -4,9 +4,10 @@ import com.lean.news.rest.request.CreatePublicationRequest;
 import com.lean.news.rest.request.UpdatePublicationRequest;
 import com.lean.news.rest.response.ListPublicationResponse;
 import com.lean.news.rest.response.PublicationResponse;
+import org.springframework.http.ResponseEntity;
 
 public interface IPublicationService {
-    PublicationResponse create(CreatePublicationRequest createPublicationRequest);
+    ResponseEntity<?> create(CreatePublicationRequest createPublicationRequest);
 
     void delete (String id);
 

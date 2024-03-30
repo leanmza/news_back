@@ -16,8 +16,7 @@ public class JwtTokenUtil implements Serializable {
 
     @Autowired
     JwtProperties jwtProperties;
-    @Value("${jwt.secret}")
-    private String secretKey;
+
 
 
     public String generateToken(String email, List<String> role){

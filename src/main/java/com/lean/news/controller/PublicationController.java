@@ -1,14 +1,16 @@
 package com.lean.news.controller;
 
+
 import com.lean.news.rest.request.CreatePublicationRequest;
-import com.lean.news.rest.request.CreateUserRequest;
+
 import com.lean.news.rest.request.UpdatePublicationRequest;
-import com.lean.news.rest.request.UpdateUserRequest;
+
 import com.lean.news.rest.response.ListPublicationResponse;
-import com.lean.news.rest.response.ListUsersResponse;
+
 import com.lean.news.rest.response.PublicationResponse;
 
-import com.lean.news.rest.response.UserResponse;
+
+import com.lean.news.service.PublicationService;
 import com.lean.news.service.interfaces.IPublicationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,21 +19,23 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Controller
-@RequestMapping(path = "api/publications")
+@RequestMapping(path = "api/publication")
 public class PublicationController {
 
     @Autowired
-    private IPublicationService publicationService;
+    private PublicationService publicationService;
 
-    @PostMapping(path = "/create",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PublicationResponse> create(/*@RequestPart("publication")*/ @Valid @RequestBody CreatePublicationRequest createPublicationRequest) {
-        PublicationResponse publicationResponse = publicationService.create(createPublicationRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
+    @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> create(@RequestPart("publication") @Valid CreatePublicationRequest createPublicationRequest) {
+
+        return  publicationService.create(createPublicationRequest);
     }
+
 
     @PatchMapping(value ="{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,

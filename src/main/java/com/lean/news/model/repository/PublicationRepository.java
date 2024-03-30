@@ -6,7 +6,6 @@ package com.lean.news.model.repository;
 
 import com.lean.news.model.entity.Publication;
 
-import com.lean.news.enums.Category;
 import java.util.List;
 
 import com.lean.news.model.entity.User;

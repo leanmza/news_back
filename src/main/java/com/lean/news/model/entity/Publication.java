@@ -4,7 +4,6 @@
  */
 package com.lean.news.model.entity;
 
-import com.lean.news.enums.Category;
 
 import java.time.LocalDateTime;
 import javax.persistence.*;
@@ -44,8 +43,8 @@ public class Publication {
     @JoinColumn(name="USER_CREATOR", nullable = false)
     private User author;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name="CATEGORY", nullable = false)
     private Category category;
 
     @Column(nullable = false)

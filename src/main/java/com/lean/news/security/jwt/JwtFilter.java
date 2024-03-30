@@ -77,12 +77,12 @@ public class JwtFilter extends OncePerRequestFilter {
                 .getBody();
     }
 
-    private String extractToken(HttpServletRequest request, FilterChain filterChain, HttpServletResponse response) throws ServletException, IOException {
+    private String extractToken(HttpServletRequest request, FilterChain chain, HttpServletResponse response) throws IOException, ServletException {
         String header = request.getHeader("Authorization");
-        if (header == null || !header.startsWith("Bearer")){
-            filterChain.doFilter(request,response);
+        if (header == null || !header.startsWith("Bearer ")) {
+            chain.doFilter(request, response);
             return null;
         }
-        return header.replace("Bearer", "");
+        return header.replace("Bearer ", "");
     }
 }
