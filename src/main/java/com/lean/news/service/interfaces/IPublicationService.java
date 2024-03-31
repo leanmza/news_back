@@ -15,10 +15,12 @@ public interface IPublicationService {
 
     PublicationResponse update(String id, UpdatePublicationRequest updatePublicationRequest);
 
-    public ListPublicationResponse findByTitle(String title);
+   ListPublicationResponse findByTitle(String title);
 
-    public ListPublicationResponse findByAuthor(String author);
+   ListPublicationResponse findByAuthor(String author);
 
-//    public ListPublicationResponse findByCategory(String category);
+    PublicationResponse updateView(String id);
+
+    PublicationResponse getOnePublicationById(String id);
 
 }

@@ -11,8 +11,10 @@ import com.lean.news.rest.response.ListUsersResponse;
 import com.lean.news.rest.response.UserResponse;
 import com.lean.news.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -145,5 +147,20 @@ public class UserService implements IUserService, UserDetailsService {
                 "N/A",  // Contraseña ficticia o dummy
                 authorities  // role convertido a GrantedAuthority
         );
+    }
+
+    public User getUserLogged() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String emailLogged = authentication.getName();
+        System.out.println("AUTHENTICATION " + authentication);
+        System.out.println("emaillogged " + emailLogged);
+
+        Optional<User> optionalUser = findByEmail(emailLogged);
+
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        } else {
+            throw new UserNotFound("Usuario no encontrado");
+        }
     }
 }

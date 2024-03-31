@@ -46,6 +46,7 @@ public class PublicationService implements IPublicationService {
         Publication publication = publicationMapper.toPublication(createPublicationRequest);
 
         System.out.println("CREATEPUBLICATIONREQUEST" + createPublicationRequest);
+        System.out.println("CREATEPUBLICATIONREQUEST.GETCATEGORY" + createPublicationRequest.getCategory());
 
         Category category = categoryService.findCategoryByName(createPublicationRequest.getCategory());
 
@@ -54,7 +55,7 @@ public class PublicationService implements IPublicationService {
         publication.setVisualizations(0);
         publication.setDeleted(false);
         publication.setCreationDate(LocalDateTime.now());
-        publication.setAuthor(getUserLogged());
+        publication.setAuthor(userService.getUserLogged());
         publicationRepository.save(publication);
 
         PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publication);
@@ -118,22 +119,24 @@ public class PublicationService implements IPublicationService {
 
     }
 
-
-
-    private User getUserLogged() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String emailLogged = authentication.getName();
-        System.out.println("AUTHENTICATION " + authentication);
-        System.out.println("emaillogged " + emailLogged);
-
-        Optional<User> optionalUser = userService.findByEmail(emailLogged);
-
-        if (optionalUser.isPresent()) {
-            return optionalUser.get();
-        } else {
-            throw new UserNotFound("Usuario no encontrado");
-        }
+    @Override
+    public PublicationResponse updateView(String id) {
+        Publication publication = findById(id);
+        Publication publicationUpdate = addView(publication);
+        publicationRepository.save(publication);
+        return publicationMapper.toPublicationResponse(publicationUpdate);
     }
+
+    @Override
+    public PublicationResponse getOnePublicationById(String id) {
+        Publication publication = findById(id);
+        return publicationMapper.toPublicationResponse(publication);
+    }
+    private Publication addView(Publication publication) {
+        publication.setVisualizations(publication.getVisualizations() + 1);
+        return publication;
+    }
+
 
     private Publication findById(String id) {
         Optional<Publication> optionalPublication = publicationRepository.findById(id);

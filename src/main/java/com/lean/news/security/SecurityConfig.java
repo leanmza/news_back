@@ -84,7 +84,8 @@ public class SecurityConfig/* extends WebSecurityConfigurerAdapter */{
     RequestMatcher publicUrls = new OrRequestMatcher(
             new AntPathRequestMatcher("/**"),
             new AntPathRequestMatcher("/login"),
-            new AntPathRequestMatcher("/auth/**")
+            new AntPathRequestMatcher("/auth/**"),
+            new AntPathRequestMatcher("/publication/**")
     );
 
 

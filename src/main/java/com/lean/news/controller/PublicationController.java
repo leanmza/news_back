@@ -30,16 +30,14 @@ public class PublicationController {
     @Autowired
     private PublicationService publicationService;
 
-    @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> create(@RequestPart("publication") @Valid CreatePublicationRequest createPublicationRequest) {
-
-        return  publicationService.create(createPublicationRequest);
+    @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> create(@RequestBody @Valid CreatePublicationRequest createPublicationRequest/*,
+      @RequestPart("images") List<MultipartFile> images*/) {
+        System.out.println(createPublicationRequest);
+        return publicationService.create(createPublicationRequest/*, images*/);
     }
 
-
-    @PatchMapping(value ="{id}",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value ="{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PublicationResponse> update(@PathVariable String id, @Valid @RequestBody UpdatePublicationRequest updatePublicationRequest){
         PublicationResponse publicationResponse = publicationService.update(id, updatePublicationRequest);
         return ResponseEntity.ok().body(publicationResponse);
@@ -54,5 +52,12 @@ public class PublicationController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ListPublicationResponse> listAllPublications() {
         return ResponseEntity.ok().body(publicationService.listAllPublications());
+    }
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //Devuelve una publicacion por id;
+    public ResponseEntity<PublicationResponse> getOnePublication(@PathVariable String id) {
+        publicationService.updateView(id);
+        return ResponseEntity.ok().body(publicationService.getOnePublicationById(id));
     }
 }

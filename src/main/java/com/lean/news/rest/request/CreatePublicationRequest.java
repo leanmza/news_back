@@ -1,8 +1,5 @@
 package com.lean.news.rest.request;
 
-
-import com.lean.news.enums.CategoryEnum;
-import com.lean.news.model.entity.Category;
 import com.lean.news.model.entity.User;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
@@ -29,5 +26,9 @@ public class CreatePublicationRequest {
 
     @Nullable
     private boolean subscriberContent;
+
+    @NotNull(message = "The user must not be null.")
+    @NotBlank
+    private User userCreator;
 
 }
