@@ -5,15 +5,16 @@ com\lean\news\service\interfaces\IPublicationService.class
 com\lean\news\model\mapper\CategoryMapper.class
 com\lean\news\service\interfaces\ICategoryService.class
 com\lean\news\NewsApplication.class
+com\lean\news\service\interfaces\IImageService.class
 com\lean\news\model\mapper\CategoryMapperImpl.class
 com\lean\news\exception\MyException.class
 com\lean\news\rest\response\ListCategoriesResponse.class
 com\lean\news\rest\request\CreateUserRequest.class
 com\lean\news\controller\UserController.class
 com\lean\news\exception\EntityNotFound.class
-com\lean\news\service\ProfileImageService.class
 com\lean\news\security\jwt\JwtTokenUtil.class
 com\lean\news\model\mapper\UserMapperImpl.class
+com\lean\news\service\CloudinaryService.class
 com\lean\news\controller\ErrorsController.class
 com\lean\news\rest\response\ListPublicationResponse.class
 com\lean\news\model\repository\PublicationRepository.class
@@ -44,6 +45,7 @@ com\lean\news\model\entity\Publication.class
 com\lean\news\model\mapper\UserMapper.class
 com\lean\news\service\interfaces\IUserService.class
 com\lean\news\model\entity\User.class
+com\lean\news\controller\ImageController.class
 com\lean\news\rest\request\UpdateUserRequest.class
 com\lean\news\enums\CategoryEnum.class
 com\lean\news\model\mapper\PublicationMapper.class

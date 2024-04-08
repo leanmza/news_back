@@ -4,6 +4,7 @@ package com.lean.news.service;
 import com.lean.news.exception.EntityNotFound;
 import com.lean.news.exception.UserNotFound;
 import com.lean.news.model.entity.Category;
+import com.lean.news.model.entity.Image;
 import com.lean.news.model.entity.Publication;
 import com.lean.news.model.entity.User;
 import com.lean.news.model.mapper.PublicationMapper;
@@ -19,9 +20,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -39,18 +44,23 @@ public class PublicationService implements IPublicationService {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    CloudinaryService cloudinaryService;
+
+    @Autowired
+    ImageService imageService;
+
+
 
     @Override
-    public ResponseEntity<?> create(CreatePublicationRequest createPublicationRequest) {
+    public ResponseEntity<?> create(CreatePublicationRequest createPublicationRequest, List<MultipartFile> images) {
 
         Publication publication = publicationMapper.toPublication(createPublicationRequest);
 
         System.out.println("CREATEPUBLICATIONREQUEST" + createPublicationRequest);
-        System.out.println("CREATEPUBLICATIONREQUEST.GETCATEGORY" + createPublicationRequest.getCategory());
 
         Category category = categoryService.findCategoryByName(createPublicationRequest.getCategory());
 
-        System.out.println("category (deberia tener un ID)" + category);
         publication.setCategory(category);
         publication.setVisualizations(0);
         publication.setDeleted(false);
@@ -58,8 +68,11 @@ public class PublicationService implements IPublicationService {
         publication.setAuthor(userService.getUserLogged());
         publicationRepository.save(publication);
 
-        PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publication);
+        List<Image> imagesList = imageHandler(images, publication);
 
+
+        PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publication);
+        publication.setImages(imagesList);
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
     }
 
@@ -84,11 +97,18 @@ public class PublicationService implements IPublicationService {
     }
 
     @Override
-    public PublicationResponse update(String id, UpdatePublicationRequest updatePublicationRequest) {
-        Publication publication = findById(id);
-        Publication publicationUpdate = updateValues(updatePublicationRequest, publication);
+    public ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images) {
+        //Edita una publicación.
+        Publication publicationEntity = findById(id);
+        Publication publicationUpdate = updateValues(updatePublicationRequest, publicationEntity);
         publicationRepository.save(publicationUpdate);
-        return publicationMapper.toPublicationResponse(publicationUpdate);
+
+        List<Image> imageList = imageHandler(images, publicationEntity);
+
+        PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publicationEntity);
+        publicationResponse.setImages(imageList);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
     }
 
 
@@ -179,5 +199,31 @@ public class PublicationService implements IPublicationService {
         Category category = categoryService.findCategoryByName(name);
 
         return category;
+    }
+
+    private List<Image> imageHandler(List<MultipartFile> images, Publication publication) {
+
+        List<Image> imageList = new ArrayList<>();
+
+        for (MultipartFile image : images) {
+            try {
+                Map cloudinaryResult = cloudinaryService.upload(image);
+                String imageUrl = (String) cloudinaryResult.get("url");
+
+                Image imageNew = new Image();
+                imageNew.setName(image.getOriginalFilename());
+                imageNew.setImageUrl(imageUrl);
+                imageNew.setCloudinaryId((String) cloudinaryResult.get("public_id"));
+                imageNew.setPublication(publication);
+                imageService.save(imageNew);
+
+                imageList.add(imageNew);
+            } catch (IOException e) {
+
+                return (List<Image>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }
+
+        return imageList;
     }
 }

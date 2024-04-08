@@ -33,7 +33,7 @@ public class Image {
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PUBLICATION_ID", nullable = false)
-    private Publication micro;
+    private Publication publication;
 
 
     public Image(String name, String imageUrl, String cloudinaryId) {

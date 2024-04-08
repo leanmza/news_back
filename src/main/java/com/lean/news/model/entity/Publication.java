@@ -6,8 +6,12 @@ package com.lean.news.model.entity;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,8 +40,11 @@ public class Publication {
     @Column(nullable = false)
     private LocalDateTime creationDate;
 
-    @OneToOne
-    private Image image;
+    @JsonIgnore
+    @JsonManagedReference
+    @Column(name = "IMAGES")
+    @OneToMany(mappedBy = "publication", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Image> images = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name="USER_CREATOR", nullable = false)

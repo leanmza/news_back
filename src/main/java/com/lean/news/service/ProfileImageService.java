@@ -1,3 +1,4 @@
+/*
 package com.lean.news.service;
 
 import com.lean.news.model.entity.ProfileImage;
@@ -11,10 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+*/
 /**
  *
  * @author Lean
- */
+ *//*
+
 @Service
 public class ProfileImageService {
 
@@ -97,3 +100,4 @@ public class ProfileImageService {
         return profileImageRepository.getOne(id);
     }
 }
+*/
