@@ -57,37 +57,12 @@ public class SecurityConfig/* extends WebSecurityConfigurerAdapter */{
                 .passwordEncoder(new BCryptPasswordEncoder());
     }
 
-    /*@Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers("/admin/*").hasRole("ADMIN")
-                .antMatchers("/css/*", "/js/*", "/img/*", "/**")
-                .permitAll()
-                .and().formLogin()
-                .loginPage("/login")
-                .loginProcessingUrl("/loginCheck")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .defaultSuccessUrl("/home")
-                .permitAll()
-                .and().logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login")
-                .permitAll()
-                .and().csrf()
-                .disable()
-                .cors();;
-
-    }*/
-
     RequestMatcher publicUrls = new OrRequestMatcher(
             new AntPathRequestMatcher("/**"),
             new AntPathRequestMatcher("/login"),
             new AntPathRequestMatcher("/auth/**"),
             new AntPathRequestMatcher("/publication/**")
     );
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
@@ -114,7 +89,7 @@ public class SecurityConfig/* extends WebSecurityConfigurerAdapter */{
         CorsConfiguration configuration = new CorsConfiguration();
         // Cambiar localhost
         configuration.setAllowedOrigins(List.of("http://127.0.0.1:5173", "http://localhost:5173"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

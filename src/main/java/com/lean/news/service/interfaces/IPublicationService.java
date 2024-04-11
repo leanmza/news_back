@@ -16,7 +16,10 @@ public interface IPublicationService {
 
     ListPublicationResponse listAllPublications();
 
-    ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images);
+
+    ListPublicationResponse listActivePublications();
+
+    ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest/*, List<MultipartFile> images*/);
 
    ListPublicationResponse findByTitle(String title);
 

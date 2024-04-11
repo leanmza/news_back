@@ -97,16 +97,28 @@ public class PublicationService implements IPublicationService {
     }
 
     @Override
-    public ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images) {
+    public ListPublicationResponse listActivePublications() {
+        List<Publication> listPublications = publicationRepository.findActivePublications();
+        if (listPublications.isEmpty()) {
+            throw new EntityNotFound("No hay publicaciones");
+        } else {
+            ListPublicationResponse listPublicationResponse = new ListPublicationResponse();
+            listPublicationResponse.setPublications(publicationMapper.toListPublicationResponse(listPublications));
+            return listPublicationResponse;
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest/*, List<MultipartFile> images*/) {
         //Edita una publicación.
         Publication publicationEntity = findById(id);
         Publication publicationUpdate = updateValues(updatePublicationRequest, publicationEntity);
         publicationRepository.save(publicationUpdate);
 
-        List<Image> imageList = imageHandler(images, publicationEntity);
+//        List<Image> imageList = imageHandler(images, publicationEntity);
 
         PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publicationEntity);
-        publicationResponse.setImages(imageList);
+//        publicationResponse.setImages(imageList);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
     }

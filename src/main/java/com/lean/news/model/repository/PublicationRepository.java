@@ -21,6 +21,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PublicationRepository extends JpaRepository<Publication, String> {
 
+    @Query("SELECT p FROM Publication p WHERE p.deleted = false ")
+    public List<Publication> findActivePublications();
+
     @Query("SELECT p FROM Publication p WHERE p.title LIKE %:word%")
     public List<Publication> findTitleByWord(@Param("word") String word);
 

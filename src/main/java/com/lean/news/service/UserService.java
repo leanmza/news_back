@@ -24,10 +24,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements IUserService, UserDetailsService {
@@ -63,7 +61,7 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     public ListUsersResponse listUsers() {
         List<User> listUsers = userRepository.findAll();
-        if (listUsers.isEmpty()){
+        if (listUsers.isEmpty()) {
             throw new UserNotFound("No hay usuarios");
         }
         ListUsersResponse listUsersResponse = new ListUsersResponse();
@@ -78,11 +76,6 @@ public class UserService implements IUserService, UserDetailsService {
         userRepository.save(userUpdate);
         return userMapper.toUserResponse(userUpdate);
     }
-
-//    @Override
-//    public void registerOrUpdateUser(String firstname, String lastname, String email) {
-//
-//    }
 
     private User findById(String id) {
         Optional<User> optionalUser = userRepository.findById(id);
@@ -121,7 +114,7 @@ public class UserService implements IUserService, UserDetailsService {
     public List<String> getRoleForUser(String email) {
         Optional<User> userOptional = userRepository.findUserByEmail(email);
 
-        if(userOptional.isPresent()){
+        if (userOptional.isPresent()) {
             User user = userOptional.get();
 
             List<String> roles = new ArrayList<>();
@@ -163,4 +156,19 @@ public class UserService implements IUserService, UserDetailsService {
             throw new UserNotFound("Usuario no encontrado");
         }
     }
+
+    public String getRolLogged() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        System.out.println(authorities);
+        List<String> roles = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        String role = roles.isEmpty() ? "" : roles.get(0);
+        System.out.println("rol: " + role);
+
+        return role;
+    }
+
 }

@@ -9,6 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class UpdatePublicationRequest {
 
+
     @Nullable
     private String title;
 
