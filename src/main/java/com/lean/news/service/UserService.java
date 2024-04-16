@@ -35,6 +35,10 @@ public class UserService implements IUserService, UserDetailsService {
     @Autowired
     private UserMapper userMapper;
 
+
+    @Autowired
+    private HttpSession session;
+
     @Override
     public UserResponse create(CreateUserRequest createUserRequest) {
         User user = userMapper.toUser(createUserRequest);
@@ -126,22 +130,6 @@ public class UserService implements IUserService, UserDetailsService {
         return Collections.singletonList("USER");
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("No user found with email: " + email));
-
-
-        List<GrantedAuthority> authorities =
-                Collections.singletonList(new SimpleGrantedAuthority(user.getRol().name()));
-
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                "N/A",  // Contraseña ficticia o dummy
-                authorities  // role convertido a GrantedAuthority
-        );
-    }
-
     public User getUserLogged() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String emailLogged = authentication.getName();
@@ -157,18 +145,23 @@ public class UserService implements IUserService, UserDetailsService {
         }
     }
 
-    public String getRolLogged() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        System.out.println(authorities);
-        List<String> roles = authorities.stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+    public void logout(){
+        session.invalidate();
+    }
 
-        String role = roles.isEmpty() ? "" : roles.get(0);
-        System.out.println("rol: " + role);
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("No user found with email: " + email));
 
-        return role;
+        List<GrantedAuthority> authorities =
+                Collections.singletonList(new SimpleGrantedAuthority(user.getRol().name()));
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                "N/A",  // Contraseña ficticia o dummy
+                authorities  // role convertido a GrantedAuthority
+        );
     }
 
 }

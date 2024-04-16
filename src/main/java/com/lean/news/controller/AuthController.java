@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.HashMap;
@@ -68,20 +69,25 @@ public class AuthController {
             //Generar el token JWT
             String jwtToken = tokenUtil.generateToken(email, roles);
 
-            System.out.println("USER " + userDetails);
-            System.out.println("JWt " + jwtToken);
+
             //Crear un objeto Json con el token JWT
             Map<String, Object> responseData = new HashMap<>();
             responseData.put("token", jwtToken);
             responseData.put("userDetails", userDetails);
 
-            System.out.println("responseData " + responseData);
             return ResponseEntity.ok().header("Authorization", "Bearer " + jwtToken).body(responseData);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Correo electrónico o contraseña incorrectos");
         }
 
+    }
 
+    @GetMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        // Invalidar la sesión para eliminar la información del usuario
+        userService.logout();
+        // Redirigir al usuario a la página de inicio de sesión o a otra página según tu aplicación
+        return ResponseEntity.noContent().build();
     }
 
 

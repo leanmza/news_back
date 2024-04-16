@@ -31,15 +31,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *
  * @author Lean
  */
 @Configuration
 @EnableWebSecurity
 @EnableConfigurationProperties(JwtProperties.class)
 @EnableMethodSecurity(prePostEnabled = true)
-
-public class SecurityConfig/* extends WebSecurityConfigurerAdapter */{
+public class SecurityConfig/* extends WebSecurityConfigurerAdapter */ {
 
     @Autowired
     public UserService userService;
@@ -61,7 +59,11 @@ public class SecurityConfig/* extends WebSecurityConfigurerAdapter */{
             new AntPathRequestMatcher("/**"),
             new AntPathRequestMatcher("/login"),
             new AntPathRequestMatcher("/auth/**"),
-            new AntPathRequestMatcher("/publication/**")
+            new AntPathRequestMatcher("/publication")
+    );
+    RequestMatcher adminUrls = new OrRequestMatcher(
+            new AntPathRequestMatcher("/api/publication/**")
+
     );
 
     @Bean
@@ -71,9 +73,8 @@ public class SecurityConfig/* extends WebSecurityConfigurerAdapter */{
                 .authorizeHttpRequests(auth -> auth
                                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                                 .requestMatchers(publicUrls).permitAll()
-             /*           .requestMatchers(adminUrls).hasRole("ADMIN")
-                        .requestMatchers(userUrls).hasRole("USER")
-*/
+                                .requestMatchers(adminUrls).hasRole("ADMIN")
+//                        .requestMatchers(userUrls).hasRole("USER")
                 )
 
                 .sessionManagement(Customizer.withDefaults())
@@ -84,6 +85,7 @@ public class SecurityConfig/* extends WebSecurityConfigurerAdapter */{
 
         return http.build();
     }
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

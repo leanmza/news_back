@@ -1,22 +1,13 @@
 package com.lean.news.service;
 
 import com.lean.news.model.entity.Image;
-import com.lean.news.exception.MyException;
 import com.lean.news.model.repository.ImageRepository;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
 import com.lean.news.service.interfaces.IImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-/**
- *
- * @author Lean
- */
 @Service
 public class ImageService implements IImageService {
 

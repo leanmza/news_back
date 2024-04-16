@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,6 +44,7 @@ public class PublicationController {
      @Autowired
      private UserService userService;
 
+     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestPart(value = "publication") @Valid CreatePublicationRequest createPublicationRequest,
                                     @RequestPart(value = "images", required = false) List<MultipartFile> images) {
@@ -77,11 +79,7 @@ public class PublicationController {
     //Devuelve una publicacion por id;
     public ResponseEntity<PublicationResponse> getOnePublication(@PathVariable String id) {
 
-        Set<String> permittedRoles = new HashSet<>(Arrays.asList("ROLE_READER", "ROLE_ANONYMOUS"));
-
-        if (permittedRoles.contains(userService.getRolLogged())) {
             publicationService.updateView(id);
-        }
 
         return ResponseEntity.ok().body(publicationService.getOnePublicationById(id));
     }
