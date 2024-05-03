@@ -24,7 +24,8 @@ public class CreateUserRequest {
     @Email
     private String email;
 
-
+    @NotNull(message = "La contraseña no puede ser nula")
+    @NotBlank
     private String password;
 
 

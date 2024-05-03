@@ -14,12 +14,19 @@ public interface IPublicationService {
 
     void delete (String id);
 
+    void changeDeletedStatus(String id);
+
     ListPublicationResponse listAllPublications();
 
 
     ListPublicationResponse listActivePublications();
 
-    ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest/*, List<MultipartFile> images*/);
+    ListPublicationResponse listLastPublications();
+
+    ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images);
+
+    ResponseEntity<?> updateData(String id, UpdatePublicationRequest updatePublicationRequest);
+
 
    ListPublicationResponse findByTitle(String title);
 

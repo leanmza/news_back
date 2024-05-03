@@ -41,10 +41,10 @@ public class PublicationController {
     @Autowired
     private PublicationService publicationService;
 
-     @Autowired
-     private UserService userService;
+    @Autowired
+    private UserService userService;
 
-     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+
     @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestPart(value = "publication") @Valid CreatePublicationRequest createPublicationRequest,
                                     @RequestPart(value = "images", required = false) List<MultipartFile> images) {
@@ -52,11 +52,35 @@ public class PublicationController {
         return publicationService.create(createPublicationRequest, images);
     }
 
-    @PatchMapping(value = "{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> update(@PathVariable String id, @Valid @RequestPart(value = "publication") UpdatePublicationRequest updatePublicationRequest/*,
-                                    @RequestPart(value = "images", required = false) List<MultipartFile> images*/) {
+    //Separo la edicion de controladores en tres por problemas si alguna part es nula
+    @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    //Edita un publicacion cuando se envian datos e imagenes
+    public ResponseEntity<?> update(@PathVariable String id, @RequestPart(value = "publication", required = false) UpdatePublicationRequest updatePublicationRequest,
+                                    @RequestPart(value = "images", required = false) List<MultipartFile> images) {
 
-        return publicationService.update(id, updatePublicationRequest/*, images*/);
+        return publicationService.update(id, updatePublicationRequest, images);
+    }
+
+    @PatchMapping(value = "/data/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    //Edita un publicacion cuando se envian solo datos.
+    public ResponseEntity<?> updateData(@PathVariable String id, @RequestPart(value = "publication", required = false) UpdatePublicationRequest updatePublicationRequest) {
+
+        return publicationService.updateData(id, updatePublicationRequest);
+    }
+
+
+/*    @DeleteMapping(value = "/images/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    //Edita un publicacion cuando se envian solo imagenes.
+    public ResponseEntity<Void> deleteImage(@PathVariable String id, @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+            publicationService.deleteImage(id);
+        return ResponseEntity.noContent().build();
+    }*/
+
+
+    @PatchMapping(value = "/status/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> changeDeletedStatus(@PathVariable String id) {
+        publicationService.changeDeletedStatus(id);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,6 +88,7 @@ public class PublicationController {
         publicationService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
 
     @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ListPublicationResponse> listAllPublications() {
@@ -75,27 +100,20 @@ public class PublicationController {
         return ResponseEntity.ok().body(publicationService.listActivePublications());
     }
 
+    @GetMapping(path = "/last", produces = MediaType.APPLICATION_JSON_VALUE)
+    //devuelve lista de la última publicación de cada categoría
+    public ResponseEntity<ListPublicationResponse> listLastPublications() {
+        return ResponseEntity.ok().body(publicationService.listLastPublications());
+    }
+
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     //Devuelve una publicacion por id;
     public ResponseEntity<PublicationResponse> getOnePublication(@PathVariable String id) {
 
-            publicationService.updateView(id);
+        publicationService.updateView(id);
 
         return ResponseEntity.ok().body(publicationService.getOnePublicationById(id));
     }
 
-    /*    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    //Devuelve una publicacion por id;
-    FIXME ESTO ANDA PERO ES DESPROLIJO Y COMPLICADO
 
-    public ResponseEntity<PublicationResponse> getOnePublication(@PathVariable String id) {
-
-        Set<String> permittedRoles = new HashSet<>(Arrays.asList("ROLE_READER", "ROLE_ANONYMOUS"));
-
-        if (permittedRoles.contains(userService.getRolLogged())) {
-            publicationService.updateView(id);
-        }
-
-        return ResponseEntity.ok().body(publicationService.getOnePublicationById(id));
-    }*/
 }

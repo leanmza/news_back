@@ -51,7 +51,6 @@ public class PublicationService implements IPublicationService {
     ImageService imageService;
 
 
-
     @Override
     public ResponseEntity<?> create(CreatePublicationRequest createPublicationRequest, List<MultipartFile> images) {
 
@@ -79,14 +78,36 @@ public class PublicationService implements IPublicationService {
 
     @Override
     public void delete(String id) {
+        publicationRepository.deleteById(id);
+    }
+
+    @Override
+    public void changeDeletedStatus(String id) {
         Publication publication = findById(id);
-        publication.setDeleted(true);
+        if (publication.isDeleted()) {
+            publication.setDeleted(false);
+        } else {
+            publication.setDeleted(true);
+        }
         publicationRepository.save(publication);
+
     }
 
     @Override
     public ListPublicationResponse listAllPublications() {
         List<Publication> listPublications = publicationRepository.findAll();
+        if (listPublications.isEmpty()) {
+            throw new EntityNotFound("No hay publicaciones");
+        } else {
+            ListPublicationResponse listPublicationResponse = new ListPublicationResponse();
+            listPublicationResponse.setPublications(publicationMapper.toListPublicationResponse(listPublications));
+            return listPublicationResponse;
+        }
+    }
+
+    @Override
+    public ListPublicationResponse listLastPublications() {
+        List<Publication> listPublications = publicationRepository.findLastPublicationByCategory();
         if (listPublications.isEmpty()) {
             throw new EntityNotFound("No hay publicaciones");
         } else {
@@ -108,25 +129,37 @@ public class PublicationService implements IPublicationService {
         }
     }
 
+
     @Override
-    public ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest/*, List<MultipartFile> images*/) {
+    public ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images) {
         //Edita una publicación.
         Publication publicationEntity = findById(id);
         Publication publicationUpdate = updateValues(updatePublicationRequest, publicationEntity);
         publicationRepository.save(publicationUpdate);
 
-//        List<Image> imageList = imageHandler(images, publicationEntity);
+        List<Image> imageList = imageHandler(images, publicationEntity);
 
         PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publicationEntity);
-//        publicationResponse.setImages(imageList);
+        publicationResponse.setImages(imageList);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
     }
 
+    @Override
+    public ResponseEntity<?> updateData(String id, UpdatePublicationRequest updatePublicationRequest) {
+        //Edita los datos de una publicación.
+        Publication publicationEntity = findById(id);
+        Publication publicationUpdate = updateValues(updatePublicationRequest, publicationEntity);
+        publicationRepository.save(publicationUpdate);
+
+        PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publicationEntity);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
+    }
 
     @Override
     public ListPublicationResponse findByTitle(String title) {
-        List<Publication> listPublications = publicationRepository.findTitleByWord(title);
+        List<Publication> listPublications = publicationRepository.findTitleByTitle(title);
         if (listPublications.isEmpty()) {
             throw new EntityNotFound("No hay publicaciones con ese título");
         } else {
@@ -135,7 +168,6 @@ public class PublicationService implements IPublicationService {
             return listPublicationResponse;
         }
     }
-
 
 
     @Override
@@ -164,6 +196,8 @@ public class PublicationService implements IPublicationService {
         Publication publication = findById(id);
         return publicationMapper.toPublicationResponse(publication);
     }
+
+
     private Publication addView(Publication publication) {
         publication.setVisualizations(publication.getVisualizations() + 1);
         return publication;

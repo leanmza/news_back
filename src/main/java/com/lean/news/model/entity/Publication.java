@@ -37,7 +37,7 @@ public class Publication {
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String body;
 
-    @Column(nullable = false)
+    @Column(name = "CREATION_DATE", nullable = false)
     private LocalDateTime creationDate;
 
     @JsonIgnore

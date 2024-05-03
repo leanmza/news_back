@@ -76,9 +76,16 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     public UserResponse update(String id, UpdateUserRequest updateUserRequest) {
         User user = findById(id);
-        User userUpdate = updateValues(updateUserRequest, user);
-        userRepository.save(userUpdate);
-        return userMapper.toUserResponse(userUpdate);
+        if (user == null) {
+            throw new UserNotFound("El usuario no existe");
+        } else {
+
+            User userUpdate = updateValues(updateUserRequest, user);
+            userRepository.save(userUpdate);
+            return userMapper.toUserResponse(userUpdate);
+        }
+
+
     }
 
     private User findById(String id) {
@@ -133,19 +140,18 @@ public class UserService implements IUserService, UserDetailsService {
     public User getUserLogged() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String emailLogged = authentication.getName();
-        System.out.println("AUTHENTICATION " + authentication);
-        System.out.println("emaillogged " + emailLogged);
 
         Optional<User> optionalUser = findByEmail(emailLogged);
 
         if (optionalUser.isPresent()) {
+
             return optionalUser.get();
         } else {
             throw new UserNotFound("Usuario no encontrado");
         }
     }
 
-    public void logout(){
+    public void logout() {
         session.invalidate();
     }
 
