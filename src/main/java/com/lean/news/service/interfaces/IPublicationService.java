@@ -14,9 +14,19 @@ public interface IPublicationService {
 
     void delete (String id);
 
+    void changeDeletedStatus(String id);
+
     ListPublicationResponse listAllPublications();
 
+
+    ListPublicationResponse listActivePublications();
+
+    ListPublicationResponse listLastPublications();
+
     ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images);
+
+    ResponseEntity<?> updateData(String id, UpdatePublicationRequest updatePublicationRequest);
+
 
    ListPublicationResponse findByTitle(String title);
 
@@ -25,5 +35,7 @@ public interface IPublicationService {
     PublicationResponse updateView(String id);
 
     PublicationResponse getOnePublicationById(String id);
+
+    void deleteImage (String id, String imageUrl);
 
 }

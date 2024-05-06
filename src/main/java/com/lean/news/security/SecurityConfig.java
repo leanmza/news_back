@@ -31,15 +31,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *
  * @author Lean
  */
 @Configuration
 @EnableWebSecurity
 @EnableConfigurationProperties(JwtProperties.class)
 @EnableMethodSecurity(prePostEnabled = true)
-
-public class SecurityConfig/* extends WebSecurityConfigurerAdapter */{
+public class SecurityConfig/* extends WebSecurityConfigurerAdapter */ {
 
     @Autowired
     public UserService userService;
@@ -57,37 +55,16 @@ public class SecurityConfig/* extends WebSecurityConfigurerAdapter */{
                 .passwordEncoder(new BCryptPasswordEncoder());
     }
 
-    /*@Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers("/admin/*").hasRole("ADMIN")
-                .antMatchers("/css/*", "/js/*", "/img/*", "/**")
-                .permitAll()
-                .and().formLogin()
-                .loginPage("/login")
-                .loginProcessingUrl("/loginCheck")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .defaultSuccessUrl("/home")
-                .permitAll()
-                .and().logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login")
-                .permitAll()
-                .and().csrf()
-                .disable()
-                .cors();;
-
-    }*/
-
     RequestMatcher publicUrls = new OrRequestMatcher(
             new AntPathRequestMatcher("/**"),
             new AntPathRequestMatcher("/login"),
             new AntPathRequestMatcher("/auth/**"),
-            new AntPathRequestMatcher("/publication/**")
+            new AntPathRequestMatcher("/publication")
     );
+    RequestMatcher adminUrls = new OrRequestMatcher(
+            new AntPathRequestMatcher("/api/publication/**")
 
+    );
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
@@ -96,9 +73,8 @@ public class SecurityConfig/* extends WebSecurityConfigurerAdapter */{
                 .authorizeHttpRequests(auth -> auth
                                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                                 .requestMatchers(publicUrls).permitAll()
-             /*           .requestMatchers(adminUrls).hasRole("ADMIN")
-                        .requestMatchers(userUrls).hasRole("USER")
-*/
+                                .requestMatchers(adminUrls).hasRole("ADMIN")
+//                        .requestMatchers(userUrls).hasRole("USER")
                 )
 
                 .sessionManagement(Customizer.withDefaults())
@@ -109,12 +85,13 @@ public class SecurityConfig/* extends WebSecurityConfigurerAdapter */{
 
         return http.build();
     }
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // Cambiar localhost
         configuration.setAllowedOrigins(List.of("http://127.0.0.1:5173", "http://localhost:5173"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

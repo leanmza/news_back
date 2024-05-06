@@ -24,10 +24,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements IUserService, UserDetailsService {
@@ -36,6 +34,10 @@ public class UserService implements IUserService, UserDetailsService {
 
     @Autowired
     private UserMapper userMapper;
+
+
+    @Autowired
+    private HttpSession session;
 
     @Override
     public UserResponse create(CreateUserRequest createUserRequest) {
@@ -63,7 +65,7 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     public ListUsersResponse listUsers() {
         List<User> listUsers = userRepository.findAll();
-        if (listUsers.isEmpty()){
+        if (listUsers.isEmpty()) {
             throw new UserNotFound("No hay usuarios");
         }
         ListUsersResponse listUsersResponse = new ListUsersResponse();
@@ -74,15 +76,17 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     public UserResponse update(String id, UpdateUserRequest updateUserRequest) {
         User user = findById(id);
-        User userUpdate = updateValues(updateUserRequest, user);
-        userRepository.save(userUpdate);
-        return userMapper.toUserResponse(userUpdate);
-    }
+        if (user == null) {
+            throw new UserNotFound("El usuario no existe");
+        } else {
 
-//    @Override
-//    public void registerOrUpdateUser(String firstname, String lastname, String email) {
-//
-//    }
+            User userUpdate = updateValues(updateUserRequest, user);
+            userRepository.save(userUpdate);
+            return userMapper.toUserResponse(userUpdate);
+        }
+
+
+    }
 
     private User findById(String id) {
         Optional<User> optionalUser = userRepository.findById(id);
@@ -121,7 +125,7 @@ public class UserService implements IUserService, UserDetailsService {
     public List<String> getRoleForUser(String email) {
         Optional<User> userOptional = userRepository.findUserByEmail(email);
 
-        if(userOptional.isPresent()){
+        if (userOptional.isPresent()) {
             User user = userOptional.get();
 
             List<String> roles = new ArrayList<>();
@@ -133,11 +137,28 @@ public class UserService implements IUserService, UserDetailsService {
         return Collections.singletonList("USER");
     }
 
+    public User getUserLogged() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String emailLogged = authentication.getName();
+
+        Optional<User> optionalUser = findByEmail(emailLogged);
+
+        if (optionalUser.isPresent()) {
+
+            return optionalUser.get();
+        } else {
+            throw new UserNotFound("Usuario no encontrado");
+        }
+    }
+
+    public void logout() {
+        session.invalidate();
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("No user found with email: " + email));
-
 
         List<GrantedAuthority> authorities =
                 Collections.singletonList(new SimpleGrantedAuthority(user.getRol().name()));
@@ -149,18 +170,4 @@ public class UserService implements IUserService, UserDetailsService {
         );
     }
 
-    public User getUserLogged() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String emailLogged = authentication.getName();
-        System.out.println("AUTHENTICATION " + authentication);
-        System.out.println("emaillogged " + emailLogged);
-
-        Optional<User> optionalUser = findByEmail(emailLogged);
-
-        if (optionalUser.isPresent()) {
-            return optionalUser.get();
-        } else {
-            throw new UserNotFound("Usuario no encontrado");
-        }
-    }
 }

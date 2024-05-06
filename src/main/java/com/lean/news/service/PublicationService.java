@@ -24,10 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PublicationService implements IPublicationService {
@@ -49,7 +46,6 @@ public class PublicationService implements IPublicationService {
 
     @Autowired
     ImageService imageService;
-
 
 
     @Override
@@ -79,9 +75,19 @@ public class PublicationService implements IPublicationService {
 
     @Override
     public void delete(String id) {
+        publicationRepository.deleteById(id);
+    }
+
+    @Override
+    public void changeDeletedStatus(String id) {
         Publication publication = findById(id);
-        publication.setDeleted(true);
+        if (publication.isDeleted()) {
+            publication.setDeleted(false);
+        } else {
+            publication.setDeleted(true);
+        }
         publicationRepository.save(publication);
+
     }
 
     @Override
@@ -95,6 +101,31 @@ public class PublicationService implements IPublicationService {
             return listPublicationResponse;
         }
     }
+
+    @Override
+    public ListPublicationResponse listLastPublications() {
+        List<Publication> listPublications = publicationRepository.findLastPublicationByCategory();
+        if (listPublications.isEmpty()) {
+            throw new EntityNotFound("No hay publicaciones");
+        } else {
+            ListPublicationResponse listPublicationResponse = new ListPublicationResponse();
+            listPublicationResponse.setPublications(publicationMapper.toListPublicationResponse(listPublications));
+            return listPublicationResponse;
+        }
+    }
+
+    @Override
+    public ListPublicationResponse listActivePublications() {
+        List<Publication> listPublications = publicationRepository.findActivePublications();
+        if (listPublications.isEmpty()) {
+            throw new EntityNotFound("No hay publicaciones");
+        } else {
+            ListPublicationResponse listPublicationResponse = new ListPublicationResponse();
+            listPublicationResponse.setPublications(publicationMapper.toListPublicationResponse(listPublications));
+            return listPublicationResponse;
+        }
+    }
+
 
     @Override
     public ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images) {
@@ -111,10 +142,21 @@ public class PublicationService implements IPublicationService {
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
     }
 
+    @Override
+    public ResponseEntity<?> updateData(String id, UpdatePublicationRequest updatePublicationRequest) {
+        //Edita los datos de una publicación.
+        Publication publicationEntity = findById(id);
+        Publication publicationUpdate = updateValues(updatePublicationRequest, publicationEntity);
+        publicationRepository.save(publicationUpdate);
+
+        PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publicationEntity);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
+    }
 
     @Override
     public ListPublicationResponse findByTitle(String title) {
-        List<Publication> listPublications = publicationRepository.findTitleByWord(title);
+        List<Publication> listPublications = publicationRepository.findTitleByTitle(title);
         if (listPublications.isEmpty()) {
             throw new EntityNotFound("No hay publicaciones con ese título");
         } else {
@@ -123,7 +165,6 @@ public class PublicationService implements IPublicationService {
             return listPublicationResponse;
         }
     }
-
 
 
     @Override
@@ -152,6 +193,27 @@ public class PublicationService implements IPublicationService {
         Publication publication = findById(id);
         return publicationMapper.toPublicationResponse(publication);
     }
+
+    @Override
+    public void deleteImage(String id, String imageUrl) {
+
+        Publication publication = findById(id);
+
+        List<Image> images = publication.getImages();
+
+        Iterator<Image> iterator = images.iterator();
+        while (iterator.hasNext()) {
+            Image image = iterator.next();
+            if (image.getImageUrl().equals(imageUrl)) {
+                iterator.remove();
+            }
+        }
+
+        publication.setImages(images);
+
+        publicationRepository.save(publication);
+    }
+
     private Publication addView(Publication publication) {
         publication.setVisualizations(publication.getVisualizations() + 1);
         return publication;

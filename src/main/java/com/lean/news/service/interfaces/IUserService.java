@@ -19,5 +19,5 @@ public interface IUserService {
 
     UserResponse update(String id, UpdateUserRequest updateUserRequest);
 
-//    public void registerOrUpdateUser(String firstname, String lastname,String email);
+
 }

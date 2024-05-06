@@ -21,17 +21,20 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PublicationRepository extends JpaRepository<Publication, String> {
 
+    @Query("SELECT p FROM Publication p WHERE p.deleted = false ORDER BY p.creationDate DESC ")
+    public List<Publication> findActivePublications();
+
     @Query("SELECT p FROM Publication p WHERE p.title LIKE %:word%")
-    public List<Publication> findTitleByWord(@Param("word") String word);
+    public List<Publication> findTitleByTitle(@Param("word") String word);
 
     @Query("SELECT p FROM Publication p WHERE p.author = :author")
     public List<Publication> findByAuthor(@Param("author") String author);
 
-/*    @Query("SELECT ne FROM News ne ORDER BY ne.dateLog DESC")
-    public List<Publication> listOrderedNews();*/
-
-//    @Query("SELECT  ne FROM News ne WHERE ne.category = :category ORDER BY ne.dateLog DESC")
-//    public List<Publication> findByCategory(@Param("category") Category category);
-
+    @Query("SELECT p FROM Publication p WHERE p.creationDate IN (SELECT MAX(p2.creationDate) FROM Publication p2 WHERE p2.deleted = false GROUP BY p2.category)")
+    public List<Publication> findLastPublicationByCategory();
+////     @Query("SELECT p2 FROM Publication p2 GROUP BY p2.category")
+////    public List<Publication> findLastPublicationByCategory();
+//     @Query("SELECT p FROM Publication p ORDER BY p.creationDate DESC")
+//    public List<Publication> findLastPublicationByCategory();
 
 }
