@@ -69,12 +69,13 @@ public class PublicationController {
     }
 
 
-/*    @DeleteMapping(value = "/images/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/images/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     //Edita un publicacion cuando se envian solo imagenes.
-    public ResponseEntity<Void> deleteImage(@PathVariable String id, @RequestPart(value = "images", required = false) List<MultipartFile> images) {
-            publicationService.deleteImage(id);
+    public ResponseEntity<Void> deleteImage(@PathVariable String id, @RequestBody Map<String, String> body) {
+        String imageUrl = body.get("imageUrl");
+        publicationService.deleteImage(id, imageUrl);
         return ResponseEntity.noContent().build();
-    }*/
+    }
 
 
     @PatchMapping(value = "/status/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

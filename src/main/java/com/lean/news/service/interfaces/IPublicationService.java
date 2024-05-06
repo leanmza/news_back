@@ -36,4 +36,6 @@ public interface IPublicationService {
 
     PublicationResponse getOnePublicationById(String id);
 
+    void deleteImage (String id, String imageUrl);
+
 }

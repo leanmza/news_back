@@ -24,10 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PublicationService implements IPublicationService {
@@ -197,6 +194,25 @@ public class PublicationService implements IPublicationService {
         return publicationMapper.toPublicationResponse(publication);
     }
 
+    @Override
+    public void deleteImage(String id, String imageUrl) {
+
+        Publication publication = findById(id);
+
+        List<Image> images = publication.getImages();
+
+        Iterator<Image> iterator = images.iterator();
+        while (iterator.hasNext()) {
+            Image image = iterator.next();
+            if (image.getImageUrl().equals(imageUrl)) {
+                iterator.remove();
+            }
+        }
+
+        publication.setImages(images);
+
+        publicationRepository.save(publication);
+    }
 
     private Publication addView(Publication publication) {
         publication.setVisualizations(publication.getVisualizations() + 1);
