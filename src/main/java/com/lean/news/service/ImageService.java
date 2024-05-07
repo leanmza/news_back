@@ -37,63 +37,7 @@ public class ImageService implements IImageService {
         imageRepository.deleteById(id);
     }
 
-  /*  @Transactional
-    public Image saveImage(MultipartFile imageFile) throws MyException {
 
-        if (imageFile != null) {
-            try {
-                Image image = new Image();
 
-                image.setName(imageFile.getName());
-                image.setMime(imageFile.getContentType());
-                image.setContent(imageFile.getBytes());
-                return imageRepository.save(image);
-            } catch (IOException ex) {
-                System.err.println(ex.getMessage());
-            }
 
-        }
-        return null;
-    }
-
-    public Image actualizeImage(String idImage, MultipartFile imageFile) throws MyException {
-
-        if (imageFile != null) {
-
-            try {
-
-                Image image = new Image();
-
-                if (idImage != null) {
-                    Optional<Image> optionalImage = imageRepository.findById(idImage);
-
-                    if (optionalImage.isPresent()) {
-                        image = optionalImage.get();
-                    }
-                }
-
-                image.setName(imageFile.getName());
-                image.setMime(imageFile.getContentType());
-                image.setContent(imageFile.getBytes());
-                return imageRepository.save(image);
-
-            } catch (IOException ex) {
-                System.err.println(ex.getMessage());
-            }
-
-        }
-
-        return null;
-    }
-
-    @Transactional(readOnly = true)
-    public List<Image> listarTodos() {
-        return imageRepository.findAll();
-    }
-    
-    
-    @Transactional
-    public Image getOne(String id) {
-        return imageRepository.getOne(id);
-    }*/
 }

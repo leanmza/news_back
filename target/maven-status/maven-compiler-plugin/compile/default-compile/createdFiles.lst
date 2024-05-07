@@ -24,7 +24,6 @@ com\lean\news\rest\request\CreatePublicationRequest.class
 com\lean\news\service\CategoryService.class
 com\lean\news\model\entity\Image.class
 com\lean\news\security\jwt\JwtEntryPoint.class
-com\lean\news\model\repository\ProfileImageRepository.class
 com\lean\news\service\PublicationService.class
 com\lean\news\rest\response\UserResponse.class
 com\lean\news\security\SecurityConfig.class
@@ -49,5 +48,4 @@ com\lean\news\rest\request\UpdateUserRequest.class
 com\lean\news\enums\CategoryEnum.class
 com\lean\news\model\mapper\PublicationMapper.class
 com\lean\news\service\UserService.class
-com\lean\news\model\entity\ProfileImage.class
 com\lean\news\model\mapper\PublicationMapperImpl.class

@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
@@ -26,7 +28,7 @@ public class PublicationResponse {
 
     private LocalDateTime creationDate;
 
-    private List<String> images;
+    private List<Map<String, Object>> images;
 
     private User author;
 
@@ -42,9 +44,14 @@ public class PublicationResponse {
         this.images = mapImages(images);
     }
 
-    private List<String> mapImages(List<Image> images) {
+    private List<Map<String, Object>> mapImages(List<Image> images) {
         return images.stream()
-                .map(Image::getImageUrl)
+                .map(image -> {
+                    Map<String, Object> imageMap = new HashMap<>();
+                    imageMap.put("id", image.getId());
+                    imageMap.put("imageUrl", image.getImageUrl());
+                    return imageMap;
+                })
                 .collect(Collectors.toList());
     }
 

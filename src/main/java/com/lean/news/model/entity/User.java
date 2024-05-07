@@ -47,9 +47,6 @@ public class User implements Serializable {
     @Enumerated(EnumType.STRING)
     private Rol rol;
 
-    @OneToOne
-    private ProfileImage profileImage;
-
     @Column(nullable = false)
     private boolean active;
 }

@@ -41,4 +41,5 @@ public class Image {
         this.imageUrl = imageUrl;
         this.cloudinaryId = cloudinaryId;
     }
+
 }
