@@ -38,4 +38,5 @@ public interface IPublicationService {
 
     void deleteImage (String id, String imageUrl);
 
+    void arrangeImages(String id, List<String> idList);
 }

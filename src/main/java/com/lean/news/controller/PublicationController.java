@@ -71,11 +71,12 @@ public class PublicationController {
 
     @PatchMapping(value = "/images/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     //Edita el orden de las imágenes en una publicación.
-    public ResponseEntity<?> arrangeImages(@PathVariable String id, @RequestPart(value = "idImages") List<String>idList) {
+    public ResponseEntity<?> arrangeImages(@PathVariable String id, @RequestPart(value="publication") UpdatePublicationRequest updatePublicationRequest, @RequestPart(value = "idImages") List<String>idList) {
 
         System.out.println(id);
+        System.out.println(updatePublicationRequest);
         System.out.println(idList);
-
+        publicationService.arrangeImages(id, idList);
         return ResponseEntity.noContent().build();
     }
 

@@ -38,7 +38,7 @@ public class PublicationResponse {
 
     private boolean deleted;
 
-    private Integer visualizations;
+    private Integer views;
 
     public void setImages(List<Image> images) {
         this.images = mapImages(images);

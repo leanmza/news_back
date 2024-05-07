@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-05-07T13:32:16-0300",
+    date = "2024-05-07T15:35:37-0300",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.10 (Amazon.com Inc.)"
 )
 @Component
@@ -67,7 +67,7 @@ public class PublicationMapperImpl implements PublicationMapper {
         publicationResponse.setCategory( publication.getCategory() );
         publicationResponse.setSubscriberContent( publication.isSubscriberContent() );
         publicationResponse.setDeleted( publication.isDeleted() );
-        publicationResponse.setVisualizations( publication.getVisualizations() );
+        publicationResponse.setViews( publication.getViews() );
 
         return publicationResponse;
     }

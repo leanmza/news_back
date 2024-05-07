@@ -63,6 +63,6 @@ public class Publication {
 
     @NotNull
     @Column(nullable = false)
-    private Integer visualizations;
+    private Integer views;
 
 }

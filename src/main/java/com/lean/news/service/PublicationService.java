@@ -58,7 +58,7 @@ public class PublicationService implements IPublicationService {
         Category category = categoryService.findCategoryByName(createPublicationRequest.getCategory());
 
         publication.setCategory(category);
-        publication.setVisualizations(0);
+        publication.setViews(0);
         publication.setDeleted(false);
         publication.setCreationDate(LocalDateTime.now());
         publication.setAuthor(userService.getUserLogged());
@@ -214,8 +214,48 @@ public class PublicationService implements IPublicationService {
         publicationRepository.save(publication);
     }
 
+    @Override
+    public void arrangeImages(String id, List<String> idList) {
+        Publication publication = findById(id);
+
+        Publication updatePublication = new Publication();
+
+        updatePublication.setId(publication.getId());
+        updatePublication.setTitle(publication.getTitle());
+        updatePublication.setBody(publication.getBody());
+        updatePublication.setCreationDate(publication.getCreationDate());
+        updatePublication.setAuthor(publication.getAuthor());
+        updatePublication.setCategory(publication.getCategory());
+        updatePublication.setSubscriberContent(publication.isSubscriberContent());
+        updatePublication.setDeleted(publication.isDeleted());
+        updatePublication.setViews(publication.getViews());
+
+        List<Image> imageList = getImageList(updatePublication, idList);
+
+    }
+
+    private List<Image> getImageList(Publication updatePublication, List<String> idList) {
+        
+        List<Image> imageList = new ArrayList<>();
+        
+        for (String idImage : idList){
+            Image image = new Image();
+            image.setId(imageService.getOne(idImage).get().getId());
+            image.setName(imageService.getOne(idImage).get().getName());
+            image.setImageUrl(imageService.getOne(idImage).get().getImageUrl());
+            image.setCloudinaryId(imageService.getOne(idImage).get().getCloudinaryId());
+            image.setPublication(updatePublication);
+
+            imageService.delete(idImage);
+            imageService.save(image);
+
+            imageList.add(image);
+        }
+        return imageList;
+    }
+
     private Publication addView(Publication publication) {
-        publication.setVisualizations(publication.getVisualizations() + 1);
+        publication.setViews(publication.getViews() + 1);
         return publication;
     }
 
