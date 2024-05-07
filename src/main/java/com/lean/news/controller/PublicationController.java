@@ -63,21 +63,12 @@ public class PublicationController {
 
     @PatchMapping(value = "/data/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     //Edita un publicacion cuando se envian solo datos.
-    public ResponseEntity<?> updateData(@PathVariable String id, @RequestPart(value = "publication", required = false) UpdatePublicationRequest updatePublicationRequest) {
-
-        return publicationService.updateData(id, updatePublicationRequest);
-    }
-
-
-    @PatchMapping(value = "/images/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    //Edita el orden de las imágenes en una publicación.
-    public ResponseEntity<?> arrangeImages(@PathVariable String id, @RequestPart(value="publication") UpdatePublicationRequest updatePublicationRequest, @RequestPart(value = "idImages") List<String>idList) {
-
-        System.out.println(id);
-        System.out.println(updatePublicationRequest);
+    public ResponseEntity<?> updateData(@PathVariable String id,
+                                        @RequestPart(value = "publication", required = false) UpdatePublicationRequest updatePublicationRequest,
+                                        @RequestPart(value = "idImages") List<String> idList) {
         System.out.println(idList);
         publicationService.arrangeImages(id, idList);
-        return ResponseEntity.noContent().build();
+        return publicationService.updateData(id, updatePublicationRequest);
     }
 
     @DeleteMapping(value = "/images/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
