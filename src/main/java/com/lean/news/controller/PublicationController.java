@@ -62,10 +62,10 @@ public class PublicationController {
     }
 
     @PatchMapping(value = "/data/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    //Edita un publicacion cuando se envian solo datos.
+    //Edita un publicacion cuando se envian solo datos de texto plano como title, body, subscriberContent, category y un arreglo con el orden de las imágenes.
     public ResponseEntity<?> updateData(@PathVariable String id,
                                         @RequestPart(value = "publication", required = false) UpdatePublicationRequest updatePublicationRequest,
-                                        @RequestPart(value = "idImages") List<String> idList) {
+                                        @RequestPart(value = "idImages", required = false) List<String> idList) {
         System.out.println(idList);
         publicationService.arrangeImages(id, idList);
         return publicationService.updateData(id, updatePublicationRequest);

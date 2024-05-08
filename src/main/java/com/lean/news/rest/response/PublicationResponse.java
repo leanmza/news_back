@@ -30,9 +30,9 @@ public class PublicationResponse {
 
     private List<Map<String, Object>> images;
 
-    private User author;
+    private String author;
 
-    private Category category;
+    private String category;
 
     private boolean subscriberContent;
 
@@ -42,6 +42,18 @@ public class PublicationResponse {
 
     public void setImages(List<Image> images) {
         this.images = mapImages(images);
+    }
+
+    public void setCategory(Category category){
+        if (category != null){
+            this.category = category.getName();
+        }
+    }
+
+    public void setAuthor(User author){
+        if (author != null){
+            this.author = author.getName();
+        }
     }
 
     private List<Map<String, Object>> mapImages(List<Image> images) {
