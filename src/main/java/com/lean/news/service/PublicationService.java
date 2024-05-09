@@ -195,23 +195,25 @@ public class PublicationService implements IPublicationService {
     }
 
     @Override
-    public void deleteImage(String id, String imageUrl) {
+    public void deleteImage(String imageId) {
+        System.out.println("delete image");
+        System.out.println(imageId);
+//        Publication publication = findById(id);
+//
+//        List<Image> images = publication.getImages();
+//
+//        Iterator<Image> iterator = images.iterator();
+//        while (iterator.hasNext()) {
+//            Image image = iterator.next();
+//            if (image.getImageUrl().equals(imageId)) {
+//                iterator.remove();
+//            }
+//        }
 
-        Publication publication = findById(id);
+        imageService.delete(imageId);
+//        publication.setImages(images);
 
-        List<Image> images = publication.getImages();
-
-        Iterator<Image> iterator = images.iterator();
-        while (iterator.hasNext()) {
-            Image image = iterator.next();
-            if (image.getImageUrl().equals(imageUrl)) {
-                iterator.remove();
-            }
-        }
-
-        publication.setImages(images);
-
-        publicationRepository.save(publication);
+//        publicationRepository.save(publication);
     }
 
     @Override
@@ -237,8 +239,11 @@ public class PublicationService implements IPublicationService {
     private List<Image> getImageList(Publication updatePublication, List<String> idList) {
         
         List<Image> imageList = new ArrayList<>();
+        System.out.println(idList);
         
         for (String idImage : idList){
+            System.out.println("getImageList");
+            System.out.println(idImage);
             Image image = new Image();
             image.setId(imageService.getOne(idImage).get().getId());
             image.setName(imageService.getOne(idImage).get().getName());

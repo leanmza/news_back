@@ -74,8 +74,8 @@ public class PublicationController {
     @DeleteMapping(value = "/images/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     //Edita un publicacion cuando se envian solo imagenes.
     public ResponseEntity<Void> deleteImage(@PathVariable String id, @RequestBody Map<String, String> body) {
-        String imageUrl = body.get("imageUrl");
-        publicationService.deleteImage(id, imageUrl);
+        String imageId = body.get("imageId");
+        publicationService.deleteImage(imageId);
         return ResponseEntity.noContent().build();
     }
 
