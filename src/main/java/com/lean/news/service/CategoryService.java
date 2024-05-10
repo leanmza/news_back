@@ -38,8 +38,6 @@ public class CategoryService implements ICategoryService {
 
     public Category findCategoryByName(String name) {
         Optional<Category> categoryOptional = categoryRepository.findByName(name);
-        System.out.println("CATAGORY NAME" + name);
-        System.out.println("CATAGORY OPTIONAL" + categoryOptional);
 
         if (categoryOptional.isEmpty()) {
             throw new EntityNotFoundException("No existe la categoría");

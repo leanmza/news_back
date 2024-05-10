@@ -25,9 +25,6 @@ public interface IPublicationService {
 
     ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images);
 
-    ResponseEntity<?> updateData(String id, UpdatePublicationRequest updatePublicationRequest);
-
-
    ListPublicationResponse findByTitle(String title);
 
    ListPublicationResponse findByAuthor(String author);

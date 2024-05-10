@@ -35,7 +35,6 @@ public class Image {
     @JoinColumn(name = "PUBLICATION_ID", nullable = false)
     private Publication publication;
 
-
     public Image(String name, String imageUrl, String cloudinaryId) {
         this.name = name;
         this.imageUrl = imageUrl;

@@ -57,22 +57,21 @@ public class PublicationController {
     //Edita un publicacion cuando se envian datos e imagenes
     public ResponseEntity<?> update(@PathVariable String id, @RequestPart(value = "publication", required = false) UpdatePublicationRequest updatePublicationRequest,
                                     @RequestPart(value = "images", required = false) List<MultipartFile> images) {
-
         return publicationService.update(id, updatePublicationRequest, images);
     }
 
-    @PatchMapping(value = "/data/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    //Edita un publicacion cuando se envian solo datos de texto plano como title, body, subscriberContent, category y un arreglo con el orden de las imágenes.
-    public ResponseEntity<?> updateData(@PathVariable String id,
-                                        @RequestPart(value = "publication", required = false) UpdatePublicationRequest updatePublicationRequest,
-                                        @RequestPart(value = "idImages", required = false) List<String> idList) {
+    @PatchMapping(value = "/images/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    //Edita la posición de las imagenes en una publicación.
+    public ResponseEntity<Void> updateNewPositions(@PathVariable String id,
+                                                @RequestBody(required = false) List<String> idList) {
         System.out.println(idList);
         publicationService.arrangeImages(id, idList);
-        return publicationService.updateData(id, updatePublicationRequest);
+        return ResponseEntity.noContent().build();
+
     }
 
     @DeleteMapping(value = "/images/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    //Edita un publicacion cuando se envian solo imagenes.
+    //Elimina una imagen de una publicación
     public ResponseEntity<Void> deleteImage(@PathVariable String id, @RequestBody Map<String, String> body) {
         String imageId = body.get("imageId");
         publicationService.deleteImage(imageId);

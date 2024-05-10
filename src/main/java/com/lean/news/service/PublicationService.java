@@ -130,26 +130,16 @@ public class PublicationService implements IPublicationService {
     @Override
     public ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images) {
         //Edita una publicación.
-        Publication publicationEntity = findById(id);
-        Publication publicationUpdate = updateValues(updatePublicationRequest, publicationEntity);
+        Publication publication = findById(id);
+        Publication publicationUpdate = updateValues(updatePublicationRequest, publication);
+
         publicationRepository.save(publicationUpdate);
 
-        List<Image> imageList = imageHandler(images, publicationEntity);
-
-        PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publicationEntity);
-        publicationResponse.setImages(imageList);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
-    }
-
-    @Override
-    public ResponseEntity<?> updateData(String id, UpdatePublicationRequest updatePublicationRequest) {
-        //Edita los datos de una publicación.
-        Publication publicationEntity = findById(id);
-        Publication publicationUpdate = updateValues(updatePublicationRequest, publicationEntity);
-        publicationRepository.save(publicationUpdate);
-
-        PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publicationEntity);
+        PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publication);
+        if (images != null) {
+            List<Image> imageList = imageHandler(images, publication);
+            publicationResponse.setImages(imageList);
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
     }
@@ -165,7 +155,6 @@ public class PublicationService implements IPublicationService {
             return listPublicationResponse;
         }
     }
-
 
     @Override
     public ListPublicationResponse findByAuthor(String author) {
@@ -196,25 +185,9 @@ public class PublicationService implements IPublicationService {
 
     @Override
     public void deleteImage(String imageId) {
-        System.out.println("delete image");
-        System.out.println(imageId);
-//        Publication publication = findById(id);
-//
-//        List<Image> images = publication.getImages();
-//
-//        Iterator<Image> iterator = images.iterator();
-//        while (iterator.hasNext()) {
-//            Image image = iterator.next();
-//            if (image.getImageUrl().equals(imageId)) {
-//                iterator.remove();
-//            }
-//        }
-
         imageService.delete(imageId);
-//        publication.setImages(images);
-
-//        publicationRepository.save(publication);
     }
+
 
     @Override
     public void arrangeImages(String id, List<String> idList) {
@@ -232,30 +205,31 @@ public class PublicationService implements IPublicationService {
         updatePublication.setDeleted(publication.isDeleted());
         updatePublication.setViews(publication.getViews());
 
-        List<Image> imageList = getImageList(updatePublication, idList);
+        List<Image> imageList = getImageList(idList, updatePublication);
 
     }
 
-    private List<Image> getImageList(Publication updatePublication, List<String> idList) {
-        
+    private List<Image> getImageList(List<String> idList, Publication publication) {
+
         List<Image> imageList = new ArrayList<>();
-        System.out.println(idList);
-        
-        for (String idImage : idList){
-            System.out.println("getImageList");
-            System.out.println(idImage);
-            Image image = new Image();
-            image.setId(imageService.getOne(idImage).get().getId());
-            image.setName(imageService.getOne(idImage).get().getName());
-            image.setImageUrl(imageService.getOne(idImage).get().getImageUrl());
-            image.setCloudinaryId(imageService.getOne(idImage).get().getCloudinaryId());
-            image.setPublication(updatePublication);
 
-            imageService.delete(idImage);
-            imageService.save(image);
+        for (String idImage : idList) {
 
-            imageList.add(image);
-        }
+            Image oldImage = imageService.getOne(idImage).get();
+
+            Image newImage = new Image();
+            newImage.setName(oldImage.getName());
+            newImage.setImageUrl(oldImage.getImageUrl());
+            newImage.setCloudinaryId(oldImage.getCloudinaryId());
+            newImage.setPublication(publication);
+
+            deleteImage(idImage);
+
+            imageService.save(newImage);
+
+            imageList.add(newImage);
+            }
+
         return imageList;
     }
 
@@ -329,8 +303,8 @@ public class PublicationService implements IPublicationService {
 
                 return (List<Image>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
-        }
 
+        }
         return imageList;
     }
 }
