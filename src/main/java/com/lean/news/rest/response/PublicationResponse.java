@@ -26,6 +26,8 @@ public class PublicationResponse {
 
     private String body;
 
+    private String header;
+    
     private LocalDateTime creationDate;
 
     private List<Map<String, Object>> images;

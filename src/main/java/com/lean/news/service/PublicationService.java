@@ -190,23 +190,13 @@ public class PublicationService implements IPublicationService {
 
 
     @Override
-    public void arrangeImages(String id, List<String> idList) {
-        Publication publication = findById(id);
+    public List<String> arrangeImages(List<Image> imagesList) {
 
-        Publication updatePublication = new Publication();
-
-        updatePublication.setId(publication.getId());
-        updatePublication.setTitle(publication.getTitle());
-        updatePublication.setBody(publication.getBody());
-        updatePublication.setCreationDate(publication.getCreationDate());
-        updatePublication.setAuthor(publication.getAuthor());
-        updatePublication.setCategory(publication.getCategory());
-        updatePublication.setSubscriberContent(publication.isSubscriberContent());
-        updatePublication.setDeleted(publication.isDeleted());
-        updatePublication.setViews(publication.getViews());
-
-        List<Image> imageList = getImageList(idList, updatePublication);
-
+        List<String> imageList = new ArrayList<>();
+        for (Image image : imagesList) {
+            imageList.add(image.getId());
+        }
+        return imageList;
     }
 
     private List<Image> getImageList(List<String> idList, Publication publication) {
@@ -228,7 +218,7 @@ public class PublicationService implements IPublicationService {
             imageService.save(newImage);
 
             imageList.add(newImage);
-            }
+        }
 
         return imageList;
     }

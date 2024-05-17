@@ -65,7 +65,7 @@ public class PublicationController {
     public ResponseEntity<Void> updateNewPositions(@PathVariable String id,
                                                 @RequestBody(required = false) List<String> idList) {
         System.out.println(idList);
-        publicationService.arrangeImages(id, idList);
+//        publicationService.arrangeImages(id, idList);
         return ResponseEntity.noContent().build();
 
     }

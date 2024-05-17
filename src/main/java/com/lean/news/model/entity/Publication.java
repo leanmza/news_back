@@ -13,6 +13,7 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -36,6 +37,10 @@ public class Publication {
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String body;
+
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
+    @Size(max = 200)
+    private String header;
 
     @Column(name = "CREATION_DATE", nullable = false)
     private LocalDateTime creationDate;

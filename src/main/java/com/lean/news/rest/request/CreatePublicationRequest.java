@@ -4,6 +4,7 @@ import com.lean.news.model.entity.User;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +21,11 @@ public class CreatePublicationRequest {
     @NotBlank
     private String body;
 
+    @NotNull(message = "El encabezado no puede ser nulo")
+    @Size(max = 200, message = "El encabezado no puede tener más de 200 caracteres")
+    @NotBlank
+    private String header;
+
     @NotNull(message = "La categoría no puede ser nula")
     @NotBlank
     private String category;
@@ -27,8 +33,9 @@ public class CreatePublicationRequest {
     @Nullable
     private boolean subscriberContent;
 
-    @NotNull(message = "The user must not be null.")
+    @NotNull(message = "El autor no puede ser nulo")
     @NotBlank
     private User userCreator;
+
 
 }

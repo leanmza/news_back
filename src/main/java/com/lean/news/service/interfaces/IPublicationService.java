@@ -1,5 +1,6 @@
 package com.lean.news.service.interfaces;
 
+import com.lean.news.model.entity.Image;
 import com.lean.news.rest.request.CreatePublicationRequest;
 import com.lean.news.rest.request.UpdatePublicationRequest;
 import com.lean.news.rest.response.ListPublicationResponse;
@@ -35,5 +36,5 @@ public interface IPublicationService {
 
     void deleteImage (String imageUrl);
 
-    void arrangeImages(String id, List<String> idList);
+    List<String> arrangeImages(List<Image> idList);
 }
