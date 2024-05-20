@@ -39,7 +39,7 @@ public class Publication {
     private String body;
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
-    @Size(max = 200)
+    @Size(max = 140)
     private String header;
 
     @Column(name = "CREATION_DATE", nullable = false)

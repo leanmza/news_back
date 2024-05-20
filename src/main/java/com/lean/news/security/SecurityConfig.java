@@ -26,6 +26,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,6 +38,7 @@ import java.util.List;
 @EnableWebSecurity
 @EnableConfigurationProperties(JwtProperties.class)
 @EnableMethodSecurity(prePostEnabled = true)
+@EnableWebMvc
 public class SecurityConfig/* extends WebSecurityConfigurerAdapter */ {
 
     @Autowired

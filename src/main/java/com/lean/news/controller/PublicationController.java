@@ -22,6 +22,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,7 +46,6 @@ public class PublicationController {
 
     @Autowired
     private UserService userService;
-
 
     @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestPart(value = "publication") @Valid CreatePublicationRequest createPublicationRequest,
@@ -91,7 +93,6 @@ public class PublicationController {
         return ResponseEntity.noContent().build();
     }
 
-
     @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ListPublicationResponse> listAllPublications() {
         return ResponseEntity.ok().body(publicationService.listAllPublications());
@@ -117,5 +118,15 @@ public class PublicationController {
         return ResponseEntity.ok().body(publicationService.getOnePublicationById(id));
     }
 
+    //Tengo que ver como hacerlo global
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        BindingResult result = ex.getBindingResult();
+        Map<String, String> errors = new HashMap<>();
+        for (FieldError error : result.getFieldErrors()) {
+            errors.put(error.getField(), error.getDefaultMessage());
+        }
+        return ResponseEntity.badRequest().body(errors);
+    }
 
 }
