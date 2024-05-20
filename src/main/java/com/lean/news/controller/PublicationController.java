@@ -120,15 +120,4 @@ public class PublicationController {
         return ResponseEntity.ok().body(publicationService.getOnePublicationById(id));
     }
 
-    //Tengo que ver como hacerlo global
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        BindingResult result = ex.getBindingResult();
-        Map<String, String> errors = new HashMap<>();
-        for (FieldError error : result.getFieldErrors()) {
-            errors.put(error.getField(), error.getDefaultMessage());
-        }
-        return ResponseEntity.badRequest().body(errors);
-    }
-
 }
