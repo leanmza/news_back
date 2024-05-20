@@ -48,7 +48,9 @@ public class PublicationController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/create",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestPart(value = "publication") @Valid CreatePublicationRequest createPublicationRequest,
                                     @RequestPart(value = "images", required = false) List<MultipartFile> images) {
 
@@ -66,7 +68,7 @@ public class PublicationController {
     @PatchMapping(value = "/images/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     //Edita la posición de las imagenes en una publicación.
     public ResponseEntity<Void> updateNewPositions(@PathVariable String id,
-                                                @RequestBody(required = false) List<String> idList) {
+                                                   @RequestBody(required = false) List<String> idList) {
         System.out.println(idList);
 //        publicationService.arrangeImages(id, idList);
         return ResponseEntity.noContent().build();

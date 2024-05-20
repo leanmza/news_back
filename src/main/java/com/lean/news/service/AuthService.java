@@ -1,6 +1,5 @@
 package com.lean.news.service;
 
-import com.lean.news.exception.UserNotFound;
 import com.lean.news.exception.ValidationException;
 import com.lean.news.security.jwt.JwtTokenUtil;
 import com.lean.news.service.interfaces.IAuthService;

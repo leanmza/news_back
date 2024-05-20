@@ -1,13 +1,10 @@
 package com.lean.news.rest.request;
 
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
 
 @Data
 @NoArgsConstructor
@@ -29,6 +26,5 @@ public class CreateUserRequest {
     @NotNull(message = "La contraseña no puede ser nula")
     @NotBlank(message = "La contraseña no puede estar en blanco")
     private String password;
-
 
 }

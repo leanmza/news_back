@@ -2,11 +2,9 @@ package com.lean.news.service;
 
 
 import com.lean.news.exception.EntityNotFound;
-import com.lean.news.exception.UserNotFound;
 import com.lean.news.model.entity.Category;
 import com.lean.news.model.entity.Image;
 import com.lean.news.model.entity.Publication;
-import com.lean.news.model.entity.User;
 import com.lean.news.model.mapper.PublicationMapper;
 import com.lean.news.model.repository.PublicationRepository;
 import com.lean.news.rest.request.CreatePublicationRequest;
@@ -17,8 +15,6 @@ import com.lean.news.service.interfaces.IPublicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,9 +48,6 @@ public class PublicationService implements IPublicationService {
     public ResponseEntity<?> create(CreatePublicationRequest createPublicationRequest, List<MultipartFile> images) {
 
         Publication publication = publicationMapper.toPublication(createPublicationRequest);
-
-        System.out.println("CREATEPUBLICATIONREQUEST" + createPublicationRequest);
-
         Category category = categoryService.findCategoryByName(createPublicationRequest.getCategory());
 
         publication.setCategory(category);
