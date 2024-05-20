@@ -12,7 +12,7 @@ import com.lean.news.rest.response.PublicationResponse;
 
 import com.lean.news.service.PublicationService;
 import com.lean.news.service.UserService;
-import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,6 +33,7 @@ import java.io.BufferedReader;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -79,7 +80,6 @@ public class PublicationController {
         publicationService.deleteImage(imageId);
         return ResponseEntity.noContent().build();
     }
-
 
     @PatchMapping(value = "/status/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> changeDeletedStatus(@PathVariable String id) {

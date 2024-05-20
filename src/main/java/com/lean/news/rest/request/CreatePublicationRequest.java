@@ -2,6 +2,7 @@ package com.lean.news.rest.request;
 
 import com.lean.news.model.entity.User;
 
+
 import jakarta.annotation.Nullable;
 import lombok.Data;
 import lombok.NoArgsConstructor;

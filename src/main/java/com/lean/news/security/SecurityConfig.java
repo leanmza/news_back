@@ -57,6 +57,11 @@ public class SecurityConfig/* extends WebSecurityConfigurerAdapter */ {
                 .passwordEncoder(new BCryptPasswordEncoder());
     }
 
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     RequestMatcher publicUrls = new OrRequestMatcher(
             new AntPathRequestMatcher("/**"),
             new AntPathRequestMatcher("/login"),
