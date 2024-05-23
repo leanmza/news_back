@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PublicationService implements IPublicationService {
@@ -183,16 +184,48 @@ public class PublicationService implements IPublicationService {
 
 
     @Override
-    public List<String> arrangeImages(List<Image> imagesList) {
+    public ResponseEntity<?> arrangeImages(String id, List<String> imagesId) {
 
-        List<String> imageList = new ArrayList<>();
-        for (Image image : imagesList) {
-            imageList.add(image.getId());
+        Publication publication = findById(id);
+
+        // Obtener la lista de imágenes actual de la publicación
+        List<Image> currentImages = publication.getImages();
+        System.out.println("antes de ordenar");
+        for(Image image : currentImages){
+            System.out.println(image);
         }
-        return imageList;
+        // Mapa para acceder rápidamente a las imágenes por su ID
+        Map<String, Image> imageMap = currentImages.stream()
+                .collect(Collectors.toMap(Image::getId, image -> image));
+
+        // Limpiar la lista existente sin romper la referencia
+        currentImages.clear();
+
+        // Reordenar las imágenes de acuerdo con el nuevo orden especificado
+        for (String imageId : imagesId) {
+            Image image = imageMap.get(imageId);
+            if (image != null) {
+                currentImages.add(image);
+            }
+        }
+
+        System.out.println("despues de ordenar");
+        for(Image image : currentImages){
+            System.out.println(image);
+        }
+        publication.setImages(currentImages);
+
+        System.out.println("en publication");
+        for(Image image : publication.getImages()){
+            System.out.println(image);
+        }
+
+        publicationRepository.save(publication);
+        PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publication);
+        return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
     }
 
-    private List<Image> getImageList(List<String> idList, Publication publication) {
+/*    private List<Image> getImageList(List<String> idList, Publication publication) {
 
         List<Image> imageList = new ArrayList<>();
 
@@ -214,7 +247,7 @@ public class PublicationService implements IPublicationService {
         }
 
         return imageList;
-    }
+    }*/
 
     private Publication addView(Publication publication) {
         publication.setViews(publication.getViews() + 1);

@@ -53,11 +53,11 @@ public class PublicationController {
 
     @PatchMapping(value = "/images/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     //Edita la posición de las imagenes en una publicación.
-    public ResponseEntity<Void> updateNewPositions(@PathVariable String id,
-                                                   @RequestBody(required = false) List<String> idList) {
+    public ResponseEntity<?> updateNewPositions(@PathVariable String id,
+                                                @RequestBody(required = false) List<String> idList) {
         System.out.println(idList);
-//        publicationService.arrangeImages(id, idList);
-        return ResponseEntity.noContent().build();
+
+        return publicationService.arrangeImages(id, idList);
 
     }
 

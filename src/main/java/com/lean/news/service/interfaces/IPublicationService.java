@@ -36,5 +36,5 @@ public interface IPublicationService {
 
     void deleteImage (String imageUrl);
 
-    List<String> arrangeImages(List<Image> idList);
+    ResponseEntity<?> arrangeImages(String id, List<String> idList);
 }
