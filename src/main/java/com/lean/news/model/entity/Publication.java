@@ -73,4 +73,8 @@ public class Publication {
     @Column(nullable = false)
     private Integer views;
 
+    @JsonIgnore
+    @JsonManagedReference
+    @OneToMany(mappedBy = "publication", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Commentary> commentaries = new ArrayList<>();
 }

@@ -4,8 +4,11 @@
  */
 package com.lean.news.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.lean.news.enums.Rol;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.*;
 
 import lombok.AccessLevel;
@@ -47,4 +50,10 @@ public class User implements Serializable {
 
     @Column(nullable = false)
     private boolean active;
+
+    @JsonManagedReference
+    @Column(nullable = false)
+    @OneToMany
+    private List<Commentary> commentary = new ArrayList<>();
 }
+

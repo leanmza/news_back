@@ -31,9 +31,6 @@ public class PublicationController {
     @Autowired
     private PublicationService publicationService;
 
-    @Autowired
-    private UserService userService;
-
     @PostMapping(path = "/create",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,18 +44,9 @@ public class PublicationController {
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     //Edita un publicacion cuando se envian datos e imagenes
     public ResponseEntity<?> update(@PathVariable String id, @RequestPart(value = "publication", required = false) UpdatePublicationRequest updatePublicationRequest,
-                                    @RequestPart(value = "images", required = false) List<MultipartFile> images) {
-        return publicationService.update(id, updatePublicationRequest, images);
-    }
-
-    @PatchMapping(value = "/images/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    //Edita la posición de las imagenes en una publicación.
-    public ResponseEntity<?> updateNewPositions(@PathVariable String id,
-                                                @RequestBody(required = false) List<String> idList) {
-        System.out.println(idList);
-
-        return publicationService.arrangeImages(id, idList);
-
+                                    @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                                    @RequestPart(value = "idImages", required = false) List<String> idImages) {
+        return publicationService.update(id, updatePublicationRequest, images, idImages);
     }
 
     @DeleteMapping(value = "/images/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -68,6 +56,7 @@ public class PublicationController {
         publicationService.deleteImage(imageId);
         return ResponseEntity.noContent().build();
     }
+
 
     @PatchMapping(value = "/status/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> changeDeletedStatus(@PathVariable String id) {

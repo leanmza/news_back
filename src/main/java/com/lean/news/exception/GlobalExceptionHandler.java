@@ -22,4 +22,14 @@ public class GlobalExceptionHandler {
         }
         return ResponseEntity.badRequest().body(errors);
     }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Map<String, String>> handleValidationException(ValidationException ex) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put(ex.getField(), ex.getMessage());
+        System.out.println("HANDLER ex " + ex.getMessage());
+
+        System.out.println(errorResponse);
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
 }

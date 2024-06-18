@@ -3,6 +3,7 @@ package com.lean.news.rest.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import com.lean.news.model.entity.Category;
+import com.lean.news.model.entity.Commentary;
 import com.lean.news.model.entity.Image;
 import com.lean.news.model.entity.User;
 import lombok.Data;
@@ -41,18 +42,27 @@ public class PublicationResponse {
 
     private Integer views;
 
+    private List<Map<String, Object>> commentaries;
+
+
     public void setImages(List<Image> images) {
         this.images = mapImages(images);
     }
 
-    public void setCategory(Category category){
-        if (category != null){
+
+    public void setCommentaries(List<Commentary> commentaries) {
+        this.commentaries = mapCommentary(commentaries);
+    }
+
+
+    public void setCategory(Category category) {
+        if (category != null) {
             this.category = category.getName();
         }
     }
 
-    public void setAuthor(User author){
-        if (author != null){
+    public void setAuthor(User author) {
+        if (author != null) {
             this.author = author.getName();
         }
     }
@@ -66,6 +76,16 @@ public class PublicationResponse {
                     return imageMap;
                 })
                 .collect(Collectors.toList());
+    }
+
+    private List<Map<String, Object>> mapCommentary(List<Commentary> commentaries) {
+        return commentaries.stream()
+                .map(comment -> {
+                    Map<String, Object> commentMap = new HashMap<>();
+                    commentMap.put("commentary", comment.getCommentary());
+                    commentMap.put("user", comment.getUser().getName());
+                    return commentMap;
+                }).collect(Collectors.toList());
     }
 
 }

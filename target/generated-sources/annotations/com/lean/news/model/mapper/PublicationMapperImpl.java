@@ -1,5 +1,6 @@
 package com.lean.news.model.mapper;
 
+import com.lean.news.model.entity.Commentary;
 import com.lean.news.model.entity.Image;
 import com.lean.news.model.entity.Publication;
 import com.lean.news.rest.request.CreatePublicationRequest;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-05-23T16:03:55-0300",
+    date = "2024-06-18T11:36:08-0300",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.10 (Amazon.com Inc.)"
 )
 @Component
@@ -59,6 +60,10 @@ public class PublicationMapperImpl implements PublicationMapper {
         List<Image> list = publication.getImages();
         if ( list != null ) {
             publicationResponse.setImages( new ArrayList<Image>( list ) );
+        }
+        List<Commentary> list1 = publication.getCommentaries();
+        if ( list1 != null ) {
+            publicationResponse.setCommentaries( new ArrayList<Commentary>( list1 ) );
         }
         publicationResponse.setCategory( publication.getCategory() );
         publicationResponse.setAuthor( publication.getAuthor() );
