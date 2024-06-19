@@ -5,11 +5,13 @@ import com.lean.news.rest.request.CreateUserRequest;
 import com.lean.news.rest.request.UpdateUserRequest;
 import com.lean.news.rest.response.ListUsersResponse;
 import com.lean.news.rest.response.UserResponse;
+import org.apache.coyote.Response;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
 public interface IUserService {
-    UserResponse create (CreateUserRequest createUserRequest);
+    ResponseEntity<UserResponse> create (CreateUserRequest createUserRequest);
 
     void delete(String id);
 

@@ -4,9 +4,10 @@
  */
 package com.lean.news.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.lean.news.enums.Rol;
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
@@ -47,9 +48,12 @@ public class User implements Serializable {
     @Enumerated(EnumType.STRING)
     private Rol rol;
 
-    @OneToOne
-    private ProfileImage profileImage;
-
     @Column(nullable = false)
     private boolean active;
+
+    @JsonManagedReference
+    @Column(nullable = false)
+    @OneToMany
+    private List<Commentary> commentary = new ArrayList<>();
 }
+
