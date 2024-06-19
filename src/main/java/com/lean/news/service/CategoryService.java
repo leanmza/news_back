@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,8 +37,6 @@ public class CategoryService implements ICategoryService {
 
     public Category findCategoryByName(String name) {
         Optional<Category> categoryOptional = categoryRepository.findByName(name);
-        System.out.println("CATAGORY NAME" + name);
-        System.out.println("CATAGORY OPTIONAL" + categoryOptional);
 
         if (categoryOptional.isEmpty()) {
             throw new EntityNotFoundException("No existe la categoría");

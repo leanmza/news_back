@@ -1,22 +1,17 @@
 package com.lean.news.controller;
 
 import com.lean.news.model.entity.User;
-import com.lean.news.security.jwt.JwtTokenUtil;
+import com.lean.news.service.AuthService;
 import com.lean.news.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,8 +27,7 @@ public class AuthController {
     private UserService userService;
 
     @Autowired
-    JwtTokenUtil tokenUtil;
-
+    private AuthService authService;
 
     @GetMapping("/user/me")
     public Optional<User> getCurrentUser() {
@@ -50,35 +44,7 @@ public class AuthController {
 
     @PostMapping("/loginCheck")
     public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) throws GeneralSecurityException, IOException {
-
-        // Obtener el correo electrónico y la contraseña del cuerpo de la solicitud
-        String email = credentials.get("email");
-        String password = credentials.get("password");
-
-
-        if (email == null || password == null || email.isEmpty() || password.isEmpty()) {
-            return ResponseEntity.badRequest().body("Correo electrónico o contraseña no proporcionados");
-        }
-
-        UserDetails userDetails = userService.loadUserByUsername(email);
-
-        if (userDetails != null) {
-
-            List<String> roles = userService.getRoleForUser(email);
-
-            //Generar el token JWT
-            String jwtToken = tokenUtil.generateToken(email, roles);
-
-
-            //Crear un objeto Json con el token JWT
-            Map<String, Object> responseData = new HashMap<>();
-            responseData.put("token", jwtToken);
-            responseData.put("userDetails", userDetails);
-
-            return ResponseEntity.ok().header("Authorization", "Bearer " + jwtToken).body(responseData);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Correo electrónico o contraseña incorrectos");
-        }
+        return authService.userDetail(credentials);
 
     }
 

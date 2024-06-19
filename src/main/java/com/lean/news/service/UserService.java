@@ -11,6 +11,8 @@ import com.lean.news.rest.response.ListUsersResponse;
 import com.lean.news.rest.response.UserResponse;
 import com.lean.news.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,12 +22,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @Service
 public class UserService implements IUserService, UserDetailsService {
@@ -40,14 +40,16 @@ public class UserService implements IUserService, UserDetailsService {
     private HttpSession session;
 
     @Override
-    public UserResponse create(CreateUserRequest createUserRequest) {
+    public ResponseEntity<UserResponse> create(CreateUserRequest createUserRequest) {
         User user = userMapper.toUser(createUserRequest);
         user.setActive(true);
         user.setRol(Rol.READER);
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
 
         userRepository.save(user);
-        return userMapper.toUserResponse(user);
+
+        UserResponse userResponse = userMapper.toUserResponse(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
     }
 
     @Override

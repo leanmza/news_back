@@ -9,12 +9,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.validation.constraints.NotNull;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 
@@ -24,6 +27,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Data
 @NoArgsConstructor
+@ToString(exclude = {"images", "author"})
 public class Publication {
 
     @Id
@@ -36,6 +40,10 @@ public class Publication {
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String body;
+
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
+    @Size(max = 140)
+    private String header;
 
     @Column(name = "CREATION_DATE", nullable = false)
     private LocalDateTime creationDate;
@@ -63,5 +71,10 @@ public class Publication {
 
     @NotNull
     @Column(nullable = false)
-    private Integer visualizations;
+    private Integer views;
+
+    @JsonIgnore
+    @JsonManagedReference
+    @OneToMany(mappedBy = "publication", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Commentary> commentaries = new ArrayList<>();
 }

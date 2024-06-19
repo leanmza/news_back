@@ -1,5 +1,7 @@
 package com.lean.news.service.interfaces;
 
+import com.lean.news.model.entity.Image;
+import com.lean.news.model.entity.Publication;
 import com.lean.news.rest.request.CreatePublicationRequest;
 import com.lean.news.rest.request.UpdatePublicationRequest;
 import com.lean.news.rest.response.ListPublicationResponse;
@@ -23,10 +25,7 @@ public interface IPublicationService {
 
     ListPublicationResponse listLastPublications();
 
-    ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images);
-
-    ResponseEntity<?> updateData(String id, UpdatePublicationRequest updatePublicationRequest);
-
+    ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images, List<String> idImages);
 
    ListPublicationResponse findByTitle(String title);
 
@@ -36,6 +35,7 @@ public interface IPublicationService {
 
     PublicationResponse getOnePublicationById(String id);
 
-    void deleteImage (String id, String imageUrl);
+    void deleteImage (String imageUrl);
 
+//    List<Image> arrangeImages(List<String> idImages, Publication publication);
 }

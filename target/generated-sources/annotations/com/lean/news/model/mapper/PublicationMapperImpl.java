@@ -1,5 +1,6 @@
 package com.lean.news.model.mapper;
 
+import com.lean.news.model.entity.Commentary;
 import com.lean.news.model.entity.Image;
 import com.lean.news.model.entity.Publication;
 import com.lean.news.rest.request.CreatePublicationRequest;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-05-06T09:28:12-0300",
+    date = "2024-06-18T11:36:08-0300",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.10 (Amazon.com Inc.)"
 )
 @Component
@@ -27,6 +28,7 @@ public class PublicationMapperImpl implements PublicationMapper {
 
         publication.setTitle( createPublicationRequest.getTitle() );
         publication.setBody( createPublicationRequest.getBody() );
+        publication.setHeader( createPublicationRequest.getHeader() );
         publication.setCategory( mapCategory( createPublicationRequest.getCategory() ) );
         publication.setSubscriberContent( createPublicationRequest.isSubscriberContent() );
 
@@ -59,15 +61,20 @@ public class PublicationMapperImpl implements PublicationMapper {
         if ( list != null ) {
             publicationResponse.setImages( new ArrayList<Image>( list ) );
         }
+        List<Commentary> list1 = publication.getCommentaries();
+        if ( list1 != null ) {
+            publicationResponse.setCommentaries( new ArrayList<Commentary>( list1 ) );
+        }
+        publicationResponse.setCategory( publication.getCategory() );
+        publicationResponse.setAuthor( publication.getAuthor() );
         publicationResponse.setId( publication.getId() );
         publicationResponse.setTitle( publication.getTitle() );
         publicationResponse.setBody( publication.getBody() );
+        publicationResponse.setHeader( publication.getHeader() );
         publicationResponse.setCreationDate( publication.getCreationDate() );
-        publicationResponse.setAuthor( publication.getAuthor() );
-        publicationResponse.setCategory( publication.getCategory() );
         publicationResponse.setSubscriberContent( publication.isSubscriberContent() );
         publicationResponse.setDeleted( publication.isDeleted() );
-        publicationResponse.setVisualizations( publication.getVisualizations() );
+        publicationResponse.setViews( publication.getViews() );
 
         return publicationResponse;
     }

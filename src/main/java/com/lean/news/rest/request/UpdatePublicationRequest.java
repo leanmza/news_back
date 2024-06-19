@@ -1,6 +1,6 @@
 package com.lean.news.rest.request;
 
-import com.lean.news.model.entity.User;
+
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +16,9 @@ public class UpdatePublicationRequest {
 
     @Nullable
     private String body;
+
+    @Nullable
+    private String header;
 
     @Nullable
     private String Category;
