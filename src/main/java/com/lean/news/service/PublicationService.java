@@ -2,14 +2,11 @@ package com.lean.news.service;
 
 
 import com.lean.news.exception.EntityNotFound;
-import com.lean.news.exception.ValidationException;
 import com.lean.news.model.entity.Category;
-import com.lean.news.model.entity.Commentary;
 import com.lean.news.model.entity.Image;
 import com.lean.news.model.entity.Publication;
 import com.lean.news.model.mapper.PublicationMapper;
 import com.lean.news.model.repository.PublicationRepository;
-import com.lean.news.rest.request.CreateCommentaryRequest;
 import com.lean.news.rest.request.CreatePublicationRequest;
 import com.lean.news.rest.request.UpdatePublicationRequest;
 import com.lean.news.rest.response.ListPublicationResponse;
@@ -59,17 +56,16 @@ public class PublicationService implements IPublicationService {
         publication.setDeleted(false);
         publication.setCreationDate(LocalDateTime.now());
         publication.setAuthor(userService.getUserLogged());
-
         publicationRepository.save(publication);
 
         List<Image> imagesList = imageHandler(images, publication);
 
-        publication.setImages(imagesList);
 
         PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publication);
-//        publicationResponse.setCommentaries(publication.getCommentaries());
+        publication.setImages(imagesList);
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
     }
+
 
     @Override
     public void delete(String id) {
@@ -126,7 +122,7 @@ public class PublicationService implements IPublicationService {
 
 
     @Override
-    public ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images, List<String> idImages) {
+    public ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images) {
         //Edita una publicación.
         Publication publication = findById(id);
         Publication publicationUpdate = updateValues(updatePublicationRequest, publication);
@@ -141,7 +137,6 @@ public class PublicationService implements IPublicationService {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
     }
-
 
     @Override
     public ListPublicationResponse findByTitle(String title) {
@@ -187,27 +182,71 @@ public class PublicationService implements IPublicationService {
         imageService.delete(imageId);
     }
 
-/*    public List<Image> arrangeImages(List<String> imagesId, Publication publication) {
-        List<Image> newArrange = new ArrayList<>();
 
-        for (String id : imagesId) {
-            Image oldImage = imageService.getOne(id).get();
+    @Override
+    public ResponseEntity<?> arrangeImages(String id, List<String> imagesId) {
 
-            //Inicializo una nueva imagen
+        Publication publication = findById(id);
+
+        // Obtener la lista de imágenes actual de la publicación
+        List<Image> currentImages = publication.getImages();
+        System.out.println("antes de ordenar");
+        for(Image image : currentImages){
+            System.out.println(image);
+        }
+        // Mapa para acceder rápidamente a las imágenes por su ID
+        Map<String, Image> imageMap = currentImages.stream()
+                .collect(Collectors.toMap(Image::getId, image -> image));
+
+        // Limpiar la lista existente sin romper la referencia
+        currentImages.clear();
+
+        // Reordenar las imágenes de acuerdo con el nuevo orden especificado
+        for (String imageId : imagesId) {
+            Image image = imageMap.get(imageId);
+            if (image != null) {
+                currentImages.add(image);
+            }
+        }
+
+        System.out.println("despues de ordenar");
+        for(Image image : currentImages){
+            System.out.println(image);
+        }
+        publication.setImages(currentImages);
+
+        System.out.println("en publication");
+        for(Image image : publication.getImages()){
+            System.out.println(image);
+        }
+
+        publicationRepository.save(publication);
+        PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publication);
+        return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
+    }
+
+/*    private List<Image> getImageList(List<String> idList, Publication publication) {
+
+        List<Image> imageList = new ArrayList<>();
+
+        for (String idImage : idList) {
+
+            Image oldImage = imageService.getOne(idImage).get();
+
             Image newImage = new Image();
-            //Le cargo los atributos de la imagen vieja sin el id
             newImage.setName(oldImage.getName());
             newImage.setImageUrl(oldImage.getImageUrl());
             newImage.setCloudinaryId(oldImage.getCloudinaryId());
             newImage.setPublication(publication);
 
-            //La cargo a la lista
-            newArrange.add(newImage);
-            //Guardo la imagen nueva en la Bd
+            deleteImage(idImage);
+
             imageService.save(newImage);
+
+            imageList.add(newImage);
         }
 
-        return newArrange;
+        return imageList;
     }*/
 
     private Publication addView(Publication publication) {
@@ -215,7 +254,8 @@ public class PublicationService implements IPublicationService {
         return publication;
     }
 
-    public Publication findById(String id) {
+
+    private Publication findById(String id) {
         Optional<Publication> optionalPublication = publicationRepository.findById(id);
         if (optionalPublication.isEmpty()) {
             throw new EntityNotFound("La publicación no existe");
@@ -260,8 +300,6 @@ public class PublicationService implements IPublicationService {
 
     private List<Image> imageHandler(List<MultipartFile> images, Publication publication) {
 
-        imagesValidation(images);
-
         List<Image> imageList = new ArrayList<>();
 
         for (MultipartFile image : images) {
@@ -277,12 +315,6 @@ public class PublicationService implements IPublicationService {
                 imageService.save(imageNew);
 
                 imageList.add(imageNew);
-            } catch (ValidationException e) {
-                // Crear y devolver una respuesta de error con la clave adecuada
-                Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put(e.getField(), e.getMessage());
-                return (List<Image>) ResponseEntity.badRequest().body(errorResponse);
-
             } catch (IOException e) {
 
                 return (List<Image>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -291,31 +323,4 @@ public class PublicationService implements IPublicationService {
         }
         return imageList;
     }
-
-    private void imagesValidation(List<MultipartFile> images) {
-        if (images == null || images.isEmpty()) {
-            throw new ValidationException("images", "Debe cargar al menos una imagen");
-        }
-
-        List<String> acceptedMimeTypes = Arrays.asList("image/jpeg", "image/png", "image/gif");
-        for (MultipartFile image : images) {
-            if (image.isEmpty()) {
-                System.out.println("imageValidation isEmpty " + image.isEmpty());
-                throw new ValidationException("images", "Debe cargar al menos una imagen");
-            }
-
-            if (!acceptedMimeTypes.contains(image.getContentType())) {
-                throw new ValidationException("images", "Formato de archivo no permitido: " + image.getContentType());
-            }
-        }
-    }
-
-    public void setCommentary(Commentary commentary){
-        Publication publication = findById(commentary.getPublication().getId());
-        List<Commentary> commentaries = publication.getCommentaries();
-        commentaries.add(commentary);
-        publication.setCommentaries(commentaries);
-        publicationRepository.save(publication);
-    }
-
 }
