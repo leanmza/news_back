@@ -2,6 +2,7 @@ package com.lean.news.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,9 +18,12 @@ public class CloudinaryService {
 
     Cloudinary cloudinary;
 
-    private final String CLOUD_NAME = "ds6ar5dpq";
-    private final String API_KEY = "751884263547487";
-    private final String API_SECRET = "VPx_6-SRSCZfhIqfVKaKlSAhM14";
+    @Value("$CLOUD_NAME")
+    private String CLOUD_NAME;
+    @Value("$API_KEY")
+    private String API_KEY;
+    @Value("$API_SECRET")
+    private String API_SECRET;
 
     private Map<String, String> valuesMap = new HashMap<>();
 
