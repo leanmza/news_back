@@ -82,8 +82,10 @@ public class PublicationResponse {
         return commentaries.stream()
                 .map(comment -> {
                     Map<String, Object> commentMap = new HashMap<>();
+                    commentMap.put("id", comment.getId());
                     commentMap.put("commentary", comment.getCommentary());
                     commentMap.put("user", comment.getUser().getName());
+                    commentMap.put("date", comment.getDate());
                     return commentMap;
                 }).collect(Collectors.toList());
     }

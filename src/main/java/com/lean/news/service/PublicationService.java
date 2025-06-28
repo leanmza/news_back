@@ -67,7 +67,6 @@ public class PublicationService implements IPublicationService {
         publication.setImages(imagesList);
 
         PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publication);
-//        publicationResponse.setCommentaries(publication.getCommentaries());
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
     }
 
@@ -293,6 +292,10 @@ public class PublicationService implements IPublicationService {
     }
 
     private void imagesValidation(List<MultipartFile> images) {
+        if (images.size() > 3){
+            throw new ValidationException("images", "No se pueden cargar más de 3 imágenes");
+        }
+
         if (images == null || images.isEmpty()) {
             throw new ValidationException("images", "Debe cargar al menos una imagen");
         }
@@ -308,14 +311,6 @@ public class PublicationService implements IPublicationService {
                 throw new ValidationException("images", "Formato de archivo no permitido: " + image.getContentType());
             }
         }
-    }
-
-    public void setCommentary(Commentary commentary){
-        Publication publication = findById(commentary.getPublication().getId());
-        List<Commentary> commentaries = publication.getCommentaries();
-        commentaries.add(commentary);
-        publication.setCommentaries(commentaries);
-        publicationRepository.save(publication);
     }
 
 }

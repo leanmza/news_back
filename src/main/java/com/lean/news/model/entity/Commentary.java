@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -33,5 +34,8 @@ public class Commentary {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PUBLICATION", nullable = false)
     private Publication publication;
+
+    @Column(name = "DATE_COMMENT", nullable = false)
+    private LocalDateTime date;
 
 }

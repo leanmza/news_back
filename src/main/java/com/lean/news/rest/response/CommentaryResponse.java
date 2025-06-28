@@ -6,6 +6,8 @@ import com.lean.news.model.entity.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -14,6 +16,8 @@ public class CommentaryResponse {
     private String id;
 
     private String commentary;
+
+    private LocalDateTime date;
 
     private String user;
 

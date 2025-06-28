@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -39,8 +41,8 @@ public class CommentaryService implements ICommentaryService {
 
         commentary.setPublication(publicationService.findById(createCommentaryRequest.getIdPublication()));
         commentary.setUser(userService.getUserLogged());
+        commentary.setDate(LocalDateTime.now());
 
-        publicationService.setCommentary(commentary);
         commentaryRepository.save(commentary);
 
         CommentaryResponse commentaryResponse = commentaryMapper.toCommentaryResponse(commentary);
