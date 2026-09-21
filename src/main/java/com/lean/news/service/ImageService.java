@@ -23,17 +23,17 @@ public class ImageService implements IImageService {
         return imageRepository.findByOrderById();
     }
 
-    public Optional<Image> getOne(String id){
+    public Optional<Image> getOne(Long id){
         return imageRepository.findById(id);
     }
 
-    public boolean exists(String id){
+    public boolean exists(Long id){
         return imageRepository.existsById(id);
     }
 
 
     @Override
-    public void delete(String id) {
+    public void delete(Long id) {
         imageRepository.deleteById(id);
     }
 

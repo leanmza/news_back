@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-05-23T16:03:55-0300",
-    comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.10 (Amazon.com Inc.)"
+    date = "2026-08-19T13:39:56-0300",
+    comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.20 (Microsoft)"
 )
 @Component
 public class PublicationMapperImpl implements PublicationMapper {
@@ -23,15 +23,14 @@ public class PublicationMapperImpl implements PublicationMapper {
             return null;
         }
 
-        Publication publication = new Publication();
+        Publication.PublicationBuilder publication = Publication.builder();
 
-        publication.setTitle( createPublicationRequest.getTitle() );
-        publication.setBody( createPublicationRequest.getBody() );
-        publication.setHeader( createPublicationRequest.getHeader() );
-        publication.setCategory( mapCategory( createPublicationRequest.getCategory() ) );
-        publication.setSubscriberContent( createPublicationRequest.isSubscriberContent() );
+        publication.title( createPublicationRequest.getTitle() );
+        publication.body( createPublicationRequest.getBody() );
+        publication.header( createPublicationRequest.getHeader() );
+        publication.category( mapCategory( createPublicationRequest.getCategory() ) );
 
-        return publication;
+        return publication.build();
     }
 
     @Override
@@ -67,9 +66,10 @@ public class PublicationMapperImpl implements PublicationMapper {
         publicationResponse.setBody( publication.getBody() );
         publicationResponse.setHeader( publication.getHeader() );
         publicationResponse.setCreationDate( publication.getCreationDate() );
-        publicationResponse.setSubscriberContent( publication.isSubscriberContent() );
         publicationResponse.setDeleted( publication.isDeleted() );
-        publicationResponse.setViews( publication.getViews() );
+        if ( publication.getViews() != null ) {
+            publicationResponse.setViews( publication.getViews().intValue() );
+        }
 
         return publicationResponse;
     }

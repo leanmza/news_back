@@ -21,8 +21,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(path = "/create",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestBody @Valid CreateUserRequest createUserRequest) {
 

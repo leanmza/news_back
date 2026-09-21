@@ -24,8 +24,8 @@ import javax.validation.Valid;
 import java.util.*;
 
 
-@Controller
-@RequestMapping(path = "api/publication")
+@RestController
+@RequestMapping(path = "/api/publications")
 public class PublicationController {
 
     @Autowired
@@ -34,8 +34,7 @@ public class PublicationController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(path = "/create",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestPart(value = "publication") @Valid CreatePublicationRequest createPublicationRequest,
                                     @RequestPart(value = "images", required = false) List<MultipartFile> images) {
@@ -46,15 +45,15 @@ public class PublicationController {
     //Separo la edicion de controladores en tres por problemas si alguna part es nula
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     //Edita un publicacion cuando se envian datos e imagenes
-    public ResponseEntity<?> update(@PathVariable String id, @RequestPart(value = "publication", required = false) UpdatePublicationRequest updatePublicationRequest,
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestPart(value = "publication", required = false) UpdatePublicationRequest updatePublicationRequest,
                                     @RequestPart(value = "images", required = false) List<MultipartFile> images) {
         return publicationService.update(id, updatePublicationRequest, images);
     }
 
     @PatchMapping(value = "/images/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     //Edita la posición de las imagenes en una publicación.
-    public ResponseEntity<?> updateNewPositions(@PathVariable String id,
-                                                @RequestBody(required = false) List<String> idList) {
+    public ResponseEntity<?> updateNewPositions(@PathVariable Long id,
+                                                @RequestBody(required = false) List<Long> idList) {
         System.out.println(idList);
 
         return publicationService.arrangeImages(id, idList);
@@ -63,20 +62,20 @@ public class PublicationController {
 
     @DeleteMapping(value = "/images/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     //Elimina una imagen de una publicación
-    public ResponseEntity<Void> deleteImage(@PathVariable String id, @RequestBody Map<String, String> body) {
-        String imageId = body.get("imageId");
+    public ResponseEntity<Void> deleteImage(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        Long imageId = Long.valueOf(body.get("imageId"));
         publicationService.deleteImage(imageId);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping(value = "/status/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> changeDeletedStatus(@PathVariable String id) {
+    public ResponseEntity<Void> changeDeletedStatus(@PathVariable Long id) {
         publicationService.changeDeletedStatus(id);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         publicationService.delete(id);
         return ResponseEntity.noContent().build();
     }
@@ -99,7 +98,7 @@ public class PublicationController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     //Devuelve una publicacion por id;
-    public ResponseEntity<PublicationResponse> getOnePublication(@PathVariable String id) {
+    public ResponseEntity<PublicationResponse> getOnePublication(@PathVariable Long id) {
 
         publicationService.updateView(id);
 

@@ -5,6 +5,6 @@ import com.lean.news.model.entity.Image;
 public interface IImageService {
     Image save(Image image);
 
-    void delete(String id);
+    void delete(Long id);
 
 }

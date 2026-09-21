@@ -35,14 +35,14 @@ public class ImageController {
     }
 
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> get(@RequestParam String id) {
+    public ResponseEntity<?> get(@RequestParam Long id) {
         System.out.println(id);
 
         return ResponseEntity.ok().body(imageService.getOne(id));
     }
 
     @GetMapping("/{fileId}")
-    public ResponseEntity<?> getImage(@PathVariable String fileId) throws IOException {
+    public ResponseEntity<?> getImage(@PathVariable Long fileId) throws IOException {
         Image imageData = imageService.getOne(fileId).get();
         return ResponseEntity.status(HttpStatus.OK).body(imageData);
 
@@ -66,7 +66,7 @@ public class ImageController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") String id) throws IOException {
+    public ResponseEntity<?> delete(@PathVariable("id") Long id) throws IOException {
         if (!imageService.exists(id)) {
             return new ResponseEntity("No existe la imagen", HttpStatus.NOT_FOUND);
         }

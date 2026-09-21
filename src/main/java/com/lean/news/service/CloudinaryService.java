@@ -16,23 +16,18 @@ import java.util.Map;
 public class CloudinaryService {
 
 
-    Cloudinary cloudinary;
+    private final Cloudinary cloudinary;
 
-    @Value("$CLOUD_NAME")
-    private String CLOUD_NAME;
-    @Value("$API_KEY")
-    private String API_KEY;
-    @Value("$API_SECRET")
-    private String API_SECRET;
-
-    private Map<String, String> valuesMap = new HashMap<>();
-
-    public CloudinaryService() {
-        valuesMap.put("cloud_name", CLOUD_NAME);
-        valuesMap.put("api_key", API_KEY);
-        valuesMap.put("api_secret", API_SECRET);
-        cloudinary = new Cloudinary(valuesMap);
-
+    public CloudinaryService(
+            @Value("${CLOUD_NAME}") String cloudName,
+            @Value("${API_KEY}") String apiKey,
+            @Value("${API_SECRET}") String apiSecret
+    ) {
+        Map<String, String> valuesMap = new HashMap<>();
+        valuesMap.put("cloud_name", cloudName);
+        valuesMap.put("api_key", apiKey);
+        valuesMap.put("api_secret", apiSecret);
+        this.cloudinary = new Cloudinary(valuesMap);
     }
 
     public Map upload(MultipartFile multipartFile) throws IOException {

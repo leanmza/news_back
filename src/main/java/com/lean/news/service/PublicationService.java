@@ -52,7 +52,7 @@ public class PublicationService implements IPublicationService {
         Category category = categoryService.findCategoryByName(createPublicationRequest.getCategory());
 
         publication.setCategory(category);
-        publication.setViews(0);
+        publication.setViews(0L);
         publication.setDeleted(false);
         publication.setCreationDate(LocalDateTime.now());
         publication.setAuthor(userService.getUserLogged());
@@ -68,12 +68,12 @@ public class PublicationService implements IPublicationService {
 
 
     @Override
-    public void delete(String id) {
+    public void delete(Long id) {
         publicationRepository.deleteById(id);
     }
 
     @Override
-    public void changeDeletedStatus(String id) {
+    public void changeDeletedStatus(Long id) {
         Publication publication = findById(id);
         if (publication.isDeleted()) {
             publication.setDeleted(false);
@@ -122,7 +122,7 @@ public class PublicationService implements IPublicationService {
 
 
     @Override
-    public ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images) {
+    public ResponseEntity<?> update(Long id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images) {
         //Edita una publicación.
         Publication publication = findById(id);
         Publication publicationUpdate = updateValues(updatePublicationRequest, publication);
@@ -164,7 +164,7 @@ public class PublicationService implements IPublicationService {
     }
 
     @Override
-    public PublicationResponse updateView(String id) {
+    public PublicationResponse updateView(Long id) {
         Publication publication = findById(id);
         Publication publicationUpdate = addView(publication);
         publicationRepository.save(publication);
@@ -172,19 +172,19 @@ public class PublicationService implements IPublicationService {
     }
 
     @Override
-    public PublicationResponse getOnePublicationById(String id) {
+    public PublicationResponse getOnePublicationById(Long id) {
         Publication publication = findById(id);
         return publicationMapper.toPublicationResponse(publication);
     }
 
     @Override
-    public void deleteImage(String imageId) {
+    public void deleteImage(Long imageId) {
         imageService.delete(imageId);
     }
 
 
     @Override
-    public ResponseEntity<?> arrangeImages(String id, List<String> imagesId) {
+    public ResponseEntity<?> arrangeImages(Long id, List<Long> imagesId) {
 
         Publication publication = findById(id);
 
@@ -195,14 +195,14 @@ public class PublicationService implements IPublicationService {
             System.out.println(image);
         }
         // Mapa para acceder rápidamente a las imágenes por su ID
-        Map<String, Image> imageMap = currentImages.stream()
+        Map<Long, Image> imageMap = currentImages.stream()
                 .collect(Collectors.toMap(Image::getId, image -> image));
 
         // Limpiar la lista existente sin romper la referencia
         currentImages.clear();
 
         // Reordenar las imágenes de acuerdo con el nuevo orden especificado
-        for (String imageId : imagesId) {
+        for (Long imageId : imagesId) {
             Image image = imageMap.get(imageId);
             if (image != null) {
                 currentImages.add(image);
@@ -229,7 +229,7 @@ public class PublicationService implements IPublicationService {
 
         List<Image> imageList = new ArrayList<>();
 
-        for (String idImage : idList) {
+        for (Long idImage : idList) {
 
             Image oldImage = imageService.getOne(idImage).get();
 
@@ -255,7 +255,7 @@ public class PublicationService implements IPublicationService {
     }
 
 
-    private Publication findById(String id) {
+    private Publication findById(Long id) {
         Optional<Publication> optionalPublication = publicationRepository.findById(id);
         if (optionalPublication.isEmpty()) {
             throw new EntityNotFound("La publicación no existe");
@@ -271,6 +271,11 @@ public class PublicationService implements IPublicationService {
             publication.setTitle(title);
         }
 
+        String header = updatePublicationRequest.getHeader();
+        if (header != null){
+            publication.setHeader(header);
+        }
+
         String body = updatePublicationRequest.getBody();
         if (body != null) {
             publication.setBody(body);
@@ -282,12 +287,7 @@ public class PublicationService implements IPublicationService {
             publication.setCategory(getCategory(category));
         }
 
-        boolean subscriberContent = updatePublicationRequest.isSubscriberContent();
-        if (publication.isSubscriberContent() == false && subscriberContent == true) {
-            publication.setSubscriberContent(true);
-        } else if (publication.isSubscriberContent() == true && subscriberContent == false) {
-            publication.setSubscriberContent(false);
-        }
+
         return publication;
     }
 
