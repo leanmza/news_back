@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
  * @author Lean
  */
 @Repository
-public interface PublicationRepository extends JpaRepository<Publication, String> {
+public interface PublicationRepository extends JpaRepository<Publication, Long> {
 
     @Query("SELECT p FROM Publication p WHERE p.deleted = false ORDER BY p.creationDate DESC ")
     public List<Publication> findActivePublications();

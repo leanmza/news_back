@@ -1,6 +1,6 @@
 package com.lean.news.controller;
 
-import com.lean.news.rest.response.ListCategoriesResponse;
+import com.lean.news.rest.response.CategoryResponse;
 
 import com.lean.news.service.interfaces.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,16 +10,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
-@RequestMapping(path ="api/categories")
+@RequestMapping("/api/categories")
 public class CategoryController {
 
     @Autowired
     ICategoryService categoryService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ListCategoriesResponse> listCategories() {
-   
-        return ResponseEntity.ok().body(categoryService.listAllCategories());
+    public ResponseEntity<List> listCategories() {
+        List<CategoryResponse> categories = categoryService.findAll();
+        return ResponseEntity.ok(categories);
     }
 }

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PublicationResponse {
 
-    private String id;
+    private Long id;
 
     private String title;
 
@@ -34,8 +34,6 @@ public class PublicationResponse {
     private String author;
 
     private String category;
-
-    private boolean subscriberContent;
 
     private boolean deleted;
 

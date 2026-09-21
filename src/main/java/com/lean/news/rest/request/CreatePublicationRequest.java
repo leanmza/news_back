@@ -21,15 +21,12 @@ public class CreatePublicationRequest {
     private String body;
 
     @NotNull(message = "El encabezado no puede ser nulo")
-    @Size(max = 140, message = "El encabezado no puede tener más de 140 caracteres")
+    @Size(max = 250, message = "El encabezado no puede tener más de 140 caracteres")
     @NotBlank(message = "El encabezado no puede estar en blanco")
     private String header;
 
     @NotNull(message = "La categoría no puede ser nula")
     @NotBlank(message = "La categoría no puede estar en blanco")
     private String category;
-
-    @Nullable
-    private boolean subscriberContent;
 
 }

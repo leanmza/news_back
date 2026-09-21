@@ -13,9 +13,9 @@ import java.util.List;
 public interface IPublicationService {
     ResponseEntity<?> create (CreatePublicationRequest createPublicationRequest, List<MultipartFile> images);
 
-    void delete (String id);
+    void delete (Long id);
 
-    void changeDeletedStatus(String id);
+    void changeDeletedStatus(Long id);
 
     ListPublicationResponse listAllPublications();
 
@@ -24,17 +24,17 @@ public interface IPublicationService {
 
     ListPublicationResponse listLastPublications();
 
-    ResponseEntity<?> update(String id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images);
+    ResponseEntity<?> update(Long id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images);
 
    ListPublicationResponse findByTitle(String title);
 
    ListPublicationResponse findByAuthor(String author);
 
-    PublicationResponse updateView(String id);
+    PublicationResponse updateView(Long id);
 
-    PublicationResponse getOnePublicationById(String id);
+    PublicationResponse getOnePublicationById(Long id);
 
-    void deleteImage (String imageUrl);
+    void deleteImage (Long imageUrl);
 
-    ResponseEntity<?> arrangeImages(String id, List<String> idList);
+    ResponseEntity<?> arrangeImages(Long id, List<Long> idList);
 }

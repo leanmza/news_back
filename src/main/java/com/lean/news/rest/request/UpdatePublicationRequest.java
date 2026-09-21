@@ -23,6 +23,4 @@ public class UpdatePublicationRequest {
     @Nullable
     private String Category;
 
-    @Nullable
-    private boolean subscriberContent;
 }

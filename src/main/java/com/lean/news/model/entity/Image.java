@@ -1,27 +1,29 @@
 package com.lean.news.model.entity;
 
-import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
+import lombok.*;
+
+import javax.persistence.*;
+
 
 /**
  *
  * @author Lean
  */
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "images")
 @ToString(exclude = "publication")
 public class Image {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String name;

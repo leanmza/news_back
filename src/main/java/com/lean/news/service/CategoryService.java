@@ -4,7 +4,7 @@ package com.lean.news.service;
 import com.lean.news.model.entity.Category;
 import com.lean.news.model.mapper.CategoryMapper;
 import com.lean.news.model.repository.CategoryRepository;
-import com.lean.news.rest.response.ListCategoriesResponse;
+import com.lean.news.rest.response.CategoryResponse;
 import com.lean.news.service.interfaces.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,26 +23,20 @@ public class CategoryService implements ICategoryService {
     CategoryMapper categoryMapper;
 
     @Override
-    public ListCategoriesResponse listAllCategories() {
+    public List<CategoryResponse> findAll() {
         List<Category> listCategoryEntities = categoryRepository.findAll();
-        if (listCategoryEntities.isEmpty()) {
-            throw new EntityNotFoundException("No hay categorías cargadas");
-        } else {
-            ListCategoriesResponse listCategoriesResponse = new ListCategoriesResponse();
-            listCategoriesResponse.setCategories(categoryMapper.toListCategoryResponse(listCategoryEntities));
-            return listCategoriesResponse;
-        }
+
+        return categoryMapper.toListCategoryResponse(listCategoryEntities);
+
     }
 
 
     public Category findCategoryByName(String name) {
         Optional<Category> categoryOptional = categoryRepository.findByName(name);
 
-        if (categoryOptional.isEmpty()) {
-            throw new EntityNotFoundException("No existe la categoría");
-        } else {
-            return categoryOptional.get();
-        }
+        return categoryRepository.findByName(name)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("No existe la categoría"));
 
     }
 }

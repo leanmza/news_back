@@ -2,6 +2,7 @@ package com.lean.news.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,20 +16,18 @@ import java.util.Map;
 public class CloudinaryService {
 
 
-    Cloudinary cloudinary;
+    private final Cloudinary cloudinary;
 
-    private final String CLOUD_NAME = "ds6ar5dpq";
-    private final String API_KEY = "751884263547487";
-    private final String API_SECRET = "VPx_6-SRSCZfhIqfVKaKlSAhM14";
-
-    private Map<String, String> valuesMap = new HashMap<>();
-
-    public CloudinaryService() {
-        valuesMap.put("cloud_name", CLOUD_NAME);
-        valuesMap.put("api_key", API_KEY);
-        valuesMap.put("api_secret", API_SECRET);
-        cloudinary = new Cloudinary(valuesMap);
-
+    public CloudinaryService(
+            @Value("${CLOUD_NAME}") String cloudName,
+            @Value("${API_KEY}") String apiKey,
+            @Value("${API_SECRET}") String apiSecret
+    ) {
+        Map<String, String> valuesMap = new HashMap<>();
+        valuesMap.put("cloud_name", cloudName);
+        valuesMap.put("api_key", apiKey);
+        valuesMap.put("api_secret", apiSecret);
+        this.cloudinary = new Cloudinary(valuesMap);
     }
 
     public Map upload(MultipartFile multipartFile) throws IOException {

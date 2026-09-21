@@ -8,16 +8,16 @@ package com.lean.news.model.entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 
@@ -25,24 +25,30 @@ import org.hibernate.annotations.GenericGenerator;
  * @author Lean
  */
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "publications")
 @ToString(exclude = {"images", "author"})
 public class Publication {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
+    @NotBlank
     private String title;
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
+    @NotBlank
     private String body;
 
-    @Column(columnDefinition = "LONGTEXT", nullable = false)
-    @Size(max = 140)
+    @Column(length = 250, nullable = false)
+    @NotBlank
+    @Size(max = 250)
     private String header;
 
     @Column(name = "CREATION_DATE", nullable = false)
@@ -62,15 +68,12 @@ public class Publication {
     @JoinColumn(name="CATEGORY", nullable = false)
     private Category category;
 
-    @Column(nullable = false)
-    private boolean subscriberContent;
-
     @NotNull
     @Column( nullable = false)
     private boolean deleted;
 
     @NotNull
     @Column(nullable = false)
-    private Integer views;
+    private Long views;
 
 }

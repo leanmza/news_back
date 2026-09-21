@@ -29,10 +29,10 @@ D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\rest\request\CreateUserRequest.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\rest\response\ListPublicationResponse.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\service\CloudinaryService.java
+D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\UserSeeder.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\controller\PublicationController.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\enums\Rol.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\service\PublicationService.java
-D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\rest\response\ListCategoriesResponse.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\controller\ImageController.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\model\entity\User.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\service\CategoryService.java

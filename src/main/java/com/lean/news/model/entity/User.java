@@ -8,10 +8,7 @@ import com.lean.news.enums.Rol;
 import java.io.Serializable;
 import javax.persistence.*;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -19,16 +16,19 @@ import org.hibernate.annotations.GenericGenerator;
  * @author Lean
  */
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "users")
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue(generator = "uuid", strategy = GenerationType.IDENTITY)
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(value = AccessLevel.NONE)
     @Column(nullable = false)
-    private String id;
+    private Long id;
 
     @Column(nullable = false)
     private String name;

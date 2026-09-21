@@ -1,7 +1,9 @@
 package com.lean.news.service.interfaces;
 
-import com.lean.news.rest.response.ListCategoriesResponse;
+import com.lean.news.rest.response.CategoryResponse;
+
+import java.util.List;
 
 public interface ICategoryService {
-    ListCategoriesResponse listAllCategories();
+    List<CategoryResponse> findAll();
 }
