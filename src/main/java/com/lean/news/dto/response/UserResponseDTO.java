@@ -2,8 +2,11 @@ package com.lean.news.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.lean.news.enums.Rol;
+import com.lean.news.model.entity.Role;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -11,6 +14,8 @@ import lombok.NoArgsConstructor;
 public class UserResponseDTO {
 
     private String id;
+
+    private String username;
 
     private String name;
 
@@ -20,7 +25,7 @@ public class UserResponseDTO {
 
     private String password;
 
-    private Rol rol;
+    private boolean enabled;
 
-    private boolean active;
+    private Set<Role> rolesList;
 }

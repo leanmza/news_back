@@ -2,15 +2,18 @@ package com.lean.news.model.mapper;
 
 import com.lean.news.dto.request.UserRequestDTO;
 import com.lean.news.dto.response.UserResponseDTO;
+import com.lean.news.model.entity.Role;
 import com.lean.news.model.entity.UserSec;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-09-23T13:04:28-0300",
+    date = "2026-09-23T16:19:36-0300",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.20 (Microsoft)"
 )
 @Component
@@ -24,8 +27,9 @@ public class UserMapperImpl implements UserMapper {
 
         UserSec.UserSecBuilder userSec = UserSec.builder();
 
+        userSec.username( userRequestDTO.getUsername() );
         userSec.name( userRequestDTO.getName() );
-        userSec.lastName( userRequestDTO.getLastName() );
+        userSec.lastname( userRequestDTO.getLastname() );
         userSec.email( userRequestDTO.getEmail() );
         userSec.password( userRequestDTO.getPassword() );
 
@@ -43,10 +47,15 @@ public class UserMapperImpl implements UserMapper {
         if ( userSec.getId() != null ) {
             userResponseDTO.setId( String.valueOf( userSec.getId() ) );
         }
+        userResponseDTO.setUsername( userSec.getUsername() );
         userResponseDTO.setName( userSec.getName() );
-        userResponseDTO.setLastName( userSec.getLastName() );
         userResponseDTO.setEmail( userSec.getEmail() );
         userResponseDTO.setPassword( userSec.getPassword() );
+        userResponseDTO.setEnabled( userSec.isEnabled() );
+        Set<Role> set = userSec.getRolesList();
+        if ( set != null ) {
+            userResponseDTO.setRolesList( new LinkedHashSet<Role>( set ) );
+        }
 
         return userResponseDTO;
     }

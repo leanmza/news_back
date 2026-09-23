@@ -27,7 +27,7 @@ IUserRepository IUserRepository;
             String encryptPass = new BCryptPasswordEncoder().encode("123");
             UserSec admin = new UserSec();
             admin.setName("admin");
-            admin.setLastName("admin");
+            admin.setLastname("admin");
             admin.setEmail("admin@gmail.com");
             admin.setPassword(encryptPass);
 //            admin.setRol(Rol.ADMIN);

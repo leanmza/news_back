@@ -36,7 +36,7 @@ public class UserSec implements Serializable {
     private String name;
 
 
-    private String lastName;
+    private String lastname;
 
     @Column(nullable = false)
     private String email;

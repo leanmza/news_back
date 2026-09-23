@@ -59,7 +59,7 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new RuntimeException("User doesn't exist"));
 
         updatedUserSec.setName(userRequestDTO.getName());
-        updatedUserSec.setLastName(userRequestDTO.getLastName());
+        updatedUserSec.setLastname(userRequestDTO.getLastname());
         updatedUserSec.setEmail(userRequestDTO.getEmail());
         updatedUserSec.setPassword(encriptPassword(userRequestDTO.getPassword()));
         updatedUserSec.setRolesList(cargarListaRoles(userRequestDTO.getRolesList()));

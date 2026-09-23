@@ -14,11 +14,15 @@ public class UserRequestDTO {
 
     @NotNull(message = "El nombre no puede ser nulo")
     @NotBlank(message = "El nombre no puede estar en blanco")
+    private String username;
+
+    @NotNull(message = "El nombre no puede ser nulo")
+    @NotBlank(message = "El nombre no puede estar en blanco")
     private String name;
 
     @NotNull(message = "El apellido no puede ser nulo")
     @NotBlank(message = "El apellido no puede estar en blanco")
-    private String lastName;
+    private String lastname;
 
     @NotNull(message = "El email no puede ser nulo")
     @NotBlank(message = "El email no puede estar en blanco")
