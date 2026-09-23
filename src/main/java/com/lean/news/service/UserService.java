@@ -1,175 +1,100 @@
 package com.lean.news.service;
 
-import com.lean.news.enums.Rol;
-import com.lean.news.exception.UserNotFound;
-import com.lean.news.model.entity.User;
+import com.lean.news.dto.request.UserRequestDTO;
+import com.lean.news.model.entity.Role;
+import com.lean.news.model.entity.UserSec;
 import com.lean.news.model.mapper.UserMapper;
-import com.lean.news.model.repository.UserRepository;
-import com.lean.news.rest.request.CreateUserRequest;
-import com.lean.news.rest.request.UpdateUserRequest;
-import com.lean.news.rest.response.ListUsersResponse;
-import com.lean.news.rest.response.UserResponse;
+import com.lean.news.repository.IUserRepository;
+import com.lean.news.dto.response.UserResponseDTO;
+import com.lean.news.service.interfaces.IRoleService;
 import com.lean.news.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotEmpty;
 import java.util.*;
 
 
 @Service
-public class UserService implements IUserService, UserDetailsService {
+public class UserService implements IUserService {
     @Autowired
-    private UserRepository userRepository;
+    private IUserRepository userRepo;
+
+    @Autowired
+    private IRoleService roleService;
 
     @Autowired
     private UserMapper userMapper;
 
-
-    @Autowired
-    private HttpSession session;
-
     @Override
-    public ResponseEntity<UserResponse> create(CreateUserRequest createUserRequest) {
-        User user = userMapper.toUser(createUserRequest);
-        user.setActive(true);
-        user.setRol(Rol.READER);
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-
-        userRepository.save(user);
-
-        UserResponse userResponse = userMapper.toUserResponse(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
+    public List<UserResponseDTO> findAll() {
+        List<UserSec> listUserSecs = userRepo.findAll();
+        return userMapper.toListUserResponse(listUserSecs);
     }
 
     @Override
-    public void delete(String id) {
-        User user = findById(id);
-        user.setActive(false);
-        userRepository.save(user);
+    public Optional<UserSec> findUserById(Long id) {
+        return userRepo.findById(id);
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findUserByEmail(email);
+    public UserResponseDTO save(UserRequestDTO userRequestDTO) {
+        UserSec userSec = userMapper.toUser(userRequestDTO);
+        userSec.setEnabled(true);
+
+        userSec.setPassword(encriptPassword((userSec.getPassword())));
+
+        userSec.setRolesList(cargarListaRoles(userRequestDTO.getRolesList()));
+        userRepo.save(userSec);
+
+
+        return userMapper.toUserResponse(userSec);
+    }
+
+
+    @Override
+    public UserResponseDTO update(Long id, UserRequestDTO userRequestDTO) {
+        UserSec updatedUserSec = userRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("User doesn't exist"));
+
+        updatedUserSec.setName(userRequestDTO.getName());
+        updatedUserSec.setLastName(userRequestDTO.getLastName());
+        updatedUserSec.setEmail(userRequestDTO.getEmail());
+        updatedUserSec.setPassword(encriptPassword(userRequestDTO.getPassword()));
+        updatedUserSec.setRolesList(cargarListaRoles(userRequestDTO.getRolesList()));
+        userRepo.save(updatedUserSec);
+        return userMapper.toUserResponse(updatedUserSec);
+
+
     }
 
     @Override
-    public ListUsersResponse listUsers() {
-        List<User> listUsers = userRepository.findAll();
-        if (listUsers.isEmpty()) {
-            throw new UserNotFound("No hay usuarios");
+    public void delete(Long id) {
+        UserSec deletedUserSec = userRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("User doesn't exist"));
+        deletedUserSec.setEnabled(false);
+        userRepo.save(deletedUserSec);
+    }
+
+
+    private Set<Role> cargarListaRoles(@NotEmpty List<Long> rolesList) {
+        Set<Role> rolesListSet = new HashSet<>();
+
+        for (Long roleId : rolesList) {
+            Role role = roleService.findById(roleId).orElse(null);
+
+            if (role != null) {
+                rolesListSet.add(role);
+            }
         }
-        ListUsersResponse listUsersResponse = new ListUsersResponse();
-        listUsersResponse.setUsers(userMapper.toListUserResponse(listUsers));
-        return listUsersResponse;
+
+        return rolesListSet;
     }
 
     @Override
-    public UserResponse update(String id, UpdateUserRequest updateUserRequest) {
-        User user = findById(id);
-        if (user == null) {
-            throw new UserNotFound("El usuario no existe");
-        } else {
-
-            User userUpdate = updateValues(updateUserRequest, user);
-            userRepository.save(userUpdate);
-            return userMapper.toUserResponse(userUpdate);
-        }
-
-
-    }
-
-    private User findById(String id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
-            throw new UserNotFound("El usuario no existe");
-        } else {
-            return optionalUser.get();
-        }
-    }
-
-    private User updateValues(UpdateUserRequest updateUserRequest, User user) {
-
-        String name = updateUserRequest.getName();
-        if (name != null) {
-            user.setName(name);
-        }
-
-        String lastName = updateUserRequest.getLastName();
-        if (lastName != null) {
-            user.setLastName(lastName);
-        }
-
-        String email = updateUserRequest.getEmail();
-        if (email != null) {
-            user.setEmail(email);
-        }
-
-        String password = updateUserRequest.getPassword();
-        if (password != null) {
-            user.setPassword(password);
-        }
-
-        return user;
-    }
-
-    public List<String> getRoleForUser(String email) {
-        Optional<User> userOptional = userRepository.findUserByEmail(email);
-
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-
-            List<String> roles = new ArrayList<>();
-            roles.add(user.getRol().name());
-
-            return roles;
-
-        }
-        return Collections.singletonList("USER");
-    }
-
-    public User getUserLogged() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String emailLogged = authentication.getName();
-
-        Optional<User> optionalUser = findByEmail(emailLogged);
-
-        if (optionalUser.isPresent()) {
-
-            return optionalUser.get();
-        } else {
-            throw new UserNotFound("Usuario no encontrado");
-        }
-    }
-
-    public void logout() {
-        session.invalidate();
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("No user found with email: " + email));
-
-        List<GrantedAuthority> authorities =
-                Collections.singletonList(new SimpleGrantedAuthority(user.getRol().name()));
-
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                "N/A",  // Contraseña ficticia o dummy
-                authorities  // role convertido a GrantedAuthority
-        );
+    public String encriptPassword(String password) {
+        return new BCryptPasswordEncoder().encode(password);
     }
 
 }

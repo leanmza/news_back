@@ -2,7 +2,7 @@ package com.lean.news.model.mapper;
 
 
 import com.lean.news.model.entity.Category;
-import com.lean.news.rest.response.CategoryResponse;
+import com.lean.news.dto.response.CategoryResponse;
 import org.mapstruct.Mapper;
 
 import java.util.List;

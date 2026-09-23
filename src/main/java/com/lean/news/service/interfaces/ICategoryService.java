@@ -1,6 +1,6 @@
 package com.lean.news.service.interfaces;
 
-import com.lean.news.rest.response.CategoryResponse;
+import com.lean.news.dto.response.CategoryResponse;
 
 import java.util.List;
 

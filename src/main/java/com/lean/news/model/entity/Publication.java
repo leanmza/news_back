@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -62,7 +61,7 @@ public class Publication {
 
     @ManyToOne
     @JoinColumn(name="USER_CREATOR", nullable = false)
-    private User author;
+    private UserSec author;
 
     @ManyToOne
     @JoinColumn(name="CATEGORY", nullable = false)

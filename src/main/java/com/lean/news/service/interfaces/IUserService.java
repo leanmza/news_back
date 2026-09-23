@@ -1,25 +1,26 @@
 package com.lean.news.service.interfaces;
 
-import com.lean.news.model.entity.User;
-import com.lean.news.rest.request.CreateUserRequest;
-import com.lean.news.rest.request.UpdateUserRequest;
-import com.lean.news.rest.response.ListUsersResponse;
-import com.lean.news.rest.response.UserResponse;
-import org.apache.coyote.Response;
-import org.springframework.http.ResponseEntity;
+import com.lean.news.dto.request.UserRequestDTO;
+import com.lean.news.dto.response.UserResponseDTO;
+import com.lean.news.model.entity.UserSec;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface IUserService {
-    ResponseEntity<UserResponse> create (CreateUserRequest createUserRequest);
 
-    void delete(String id);
+    List<UserResponseDTO> findAll();
 
-    public Optional<User> findByEmail(String email);
+    Optional<UserSec> findUserById(Long id);
 
-    ListUsersResponse listUsers();
+    UserResponseDTO save(UserRequestDTO userRequestDTO);
 
-    UserResponse update(String id, UpdateUserRequest updateUserRequest);
+    UserResponseDTO update(Long id, UserRequestDTO userRequestDTO);
 
+    void delete(Long id);
+
+//    public Optional<User> findByEmail(String email);
+
+    String encriptPassword(String password);
 
 }

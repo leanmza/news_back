@@ -6,11 +6,11 @@ import com.lean.news.model.entity.Category;
 import com.lean.news.model.entity.Image;
 import com.lean.news.model.entity.Publication;
 import com.lean.news.model.mapper.PublicationMapper;
-import com.lean.news.model.repository.PublicationRepository;
-import com.lean.news.rest.request.CreatePublicationRequest;
-import com.lean.news.rest.request.UpdatePublicationRequest;
-import com.lean.news.rest.response.ListPublicationResponse;
-import com.lean.news.rest.response.PublicationResponse;
+import com.lean.news.repository.IPublicationRepository;
+import com.lean.news.dto.request.CreatePublicationRequest;
+import com.lean.news.dto.request.UpdatePublicationRequest;
+import com.lean.news.dto.response.ListPublicationResponse;
+import com.lean.news.dto.response.PublicationResponse;
 import com.lean.news.service.interfaces.IPublicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class PublicationService implements IPublicationService {
 
     @Autowired
-    private PublicationRepository publicationRepository;
+    private IPublicationRepository IPublicationRepository;
 
     @Autowired
     private PublicationMapper publicationMapper;
@@ -55,8 +55,8 @@ public class PublicationService implements IPublicationService {
         publication.setViews(0L);
         publication.setDeleted(false);
         publication.setCreationDate(LocalDateTime.now());
-        publication.setAuthor(userService.getUserLogged());
-        publicationRepository.save(publication);
+//        publication.setAuthor(userService.getUserLogged());
+        IPublicationRepository.save(publication);
 
         List<Image> imagesList = imageHandler(images, publication);
 
@@ -69,7 +69,7 @@ public class PublicationService implements IPublicationService {
 
     @Override
     public void delete(Long id) {
-        publicationRepository.deleteById(id);
+        IPublicationRepository.deleteById(id);
     }
 
     @Override
@@ -80,13 +80,13 @@ public class PublicationService implements IPublicationService {
         } else {
             publication.setDeleted(true);
         }
-        publicationRepository.save(publication);
+        IPublicationRepository.save(publication);
 
     }
 
     @Override
     public ListPublicationResponse listAllPublications() {
-        List<Publication> listPublications = publicationRepository.findAll();
+        List<Publication> listPublications = IPublicationRepository.findAll();
         if (listPublications.isEmpty()) {
             throw new EntityNotFound("No hay publicaciones");
         } else {
@@ -98,7 +98,7 @@ public class PublicationService implements IPublicationService {
 
     @Override
     public ListPublicationResponse listLastPublications() {
-        List<Publication> listPublications = publicationRepository.findLastPublicationByCategory();
+        List<Publication> listPublications = IPublicationRepository.findLastPublicationByCategory();
         if (listPublications.isEmpty()) {
             throw new EntityNotFound("No hay publicaciones");
         } else {
@@ -110,7 +110,7 @@ public class PublicationService implements IPublicationService {
 
     @Override
     public ListPublicationResponse listActivePublications() {
-        List<Publication> listPublications = publicationRepository.findActivePublications();
+        List<Publication> listPublications = IPublicationRepository.findActivePublications();
         if (listPublications.isEmpty()) {
             throw new EntityNotFound("No hay publicaciones");
         } else {
@@ -127,7 +127,7 @@ public class PublicationService implements IPublicationService {
         Publication publication = findById(id);
         Publication publicationUpdate = updateValues(updatePublicationRequest, publication);
 
-        publicationRepository.save(publicationUpdate);
+        IPublicationRepository.save(publicationUpdate);
 
         PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publication);
         if (images != null) {
@@ -140,7 +140,7 @@ public class PublicationService implements IPublicationService {
 
     @Override
     public ListPublicationResponse findByTitle(String title) {
-        List<Publication> listPublications = publicationRepository.findTitleByTitle(title);
+        List<Publication> listPublications = IPublicationRepository.findTitleByTitle(title);
         if (listPublications.isEmpty()) {
             throw new EntityNotFound("No hay publicaciones con ese título");
         } else {
@@ -152,7 +152,7 @@ public class PublicationService implements IPublicationService {
 
     @Override
     public ListPublicationResponse findByAuthor(String author) {
-        List<Publication> listPublications = publicationRepository.findByAuthor(author);
+        List<Publication> listPublications = IPublicationRepository.findByAuthor(author);
         if (listPublications.isEmpty()) {
             throw new EntityNotFound("No hay publicaciones con ese autor");
         } else {
@@ -167,7 +167,7 @@ public class PublicationService implements IPublicationService {
     public PublicationResponse updateView(Long id) {
         Publication publication = findById(id);
         Publication publicationUpdate = addView(publication);
-        publicationRepository.save(publication);
+        IPublicationRepository.save(publication);
         return publicationMapper.toPublicationResponse(publicationUpdate);
     }
 
@@ -220,7 +220,7 @@ public class PublicationService implements IPublicationService {
             System.out.println(image);
         }
 
-        publicationRepository.save(publication);
+        IPublicationRepository.save(publication);
         PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publication);
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
     }
@@ -256,7 +256,7 @@ public class PublicationService implements IPublicationService {
 
 
     private Publication findById(Long id) {
-        Optional<Publication> optionalPublication = publicationRepository.findById(id);
+        Optional<Publication> optionalPublication = IPublicationRepository.findById(id);
         if (optionalPublication.isEmpty()) {
             throw new EntityNotFound("La publicación no existe");
         } else {

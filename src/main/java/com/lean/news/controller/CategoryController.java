@@ -1,6 +1,6 @@
 package com.lean.news.controller;
 
-import com.lean.news.rest.response.CategoryResponse;
+import com.lean.news.dto.response.CategoryResponse;
 
 import com.lean.news.service.interfaces.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;

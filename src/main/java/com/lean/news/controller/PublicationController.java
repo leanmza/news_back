@@ -1,13 +1,13 @@
 package com.lean.news.controller;
 
 
-import com.lean.news.rest.request.CreatePublicationRequest;
+import com.lean.news.dto.request.CreatePublicationRequest;
 
-import com.lean.news.rest.request.UpdatePublicationRequest;
+import com.lean.news.dto.request.UpdatePublicationRequest;
 
-import com.lean.news.rest.response.ListPublicationResponse;
+import com.lean.news.dto.response.ListPublicationResponse;
 
-import com.lean.news.rest.response.PublicationResponse;
+import com.lean.news.dto.response.PublicationResponse;
 
 
 import com.lean.news.service.PublicationService;
@@ -16,7 +16,6 @@ import com.lean.news.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,10 +1,9 @@
 package com.lean.news.service.interfaces;
 
-import com.lean.news.model.entity.Image;
-import com.lean.news.rest.request.CreatePublicationRequest;
-import com.lean.news.rest.request.UpdatePublicationRequest;
-import com.lean.news.rest.response.ListPublicationResponse;
-import com.lean.news.rest.response.PublicationResponse;
+import com.lean.news.dto.request.CreatePublicationRequest;
+import com.lean.news.dto.request.UpdatePublicationRequest;
+import com.lean.news.dto.response.ListPublicationResponse;
+import com.lean.news.dto.response.PublicationResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 

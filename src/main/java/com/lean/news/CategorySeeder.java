@@ -2,7 +2,7 @@ package com.lean.news;
 
 import com.lean.news.enums.CategoryEnum;
 import com.lean.news.model.entity.Category;
-import com.lean.news.model.repository.CategoryRepository;
+import com.lean.news.repository.ICategoryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +18,12 @@ public class CategorySeeder implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(CategorySeeder.class);
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    private ICategoryRepository ICategoryRepository;
 
     @Override
     public void run(String... args) {
 
-        if (categoryRepository.count() == 0) {
+        if (ICategoryRepository.count() == 0) {
 
             List<Category> categories = Arrays.stream(CategoryEnum.values())
                     .map(category -> {
@@ -33,7 +33,7 @@ public class CategorySeeder implements CommandLineRunner {
                     })
                     .toList();
 
-            categoryRepository.saveAll(categories);
+            ICategoryRepository.saveAll(categories);
 
             logger.info("Categorías cargadas");
         }

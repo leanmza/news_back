@@ -1,7 +1,7 @@
 package com.lean.news.model.mapper;
 
+import com.lean.news.dto.response.CategoryResponse;
 import com.lean.news.model.entity.Category;
-import com.lean.news.rest.response.CategoryResponse;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-08-19T13:39:56-0300",
+    date = "2026-09-23T13:04:28-0300",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.20 (Microsoft)"
 )
 @Component

@@ -1,55 +1,56 @@
 package com.lean.news.controller;
 
-import com.lean.news.model.entity.User;
-import com.lean.news.rest.request.CreateUserRequest;
-import com.lean.news.rest.request.UpdateUserRequest;
-import com.lean.news.rest.response.ListUsersResponse;
-import com.lean.news.rest.response.UserResponse;
-import com.lean.news.service.UserService;
+import com.lean.news.dto.request.UserRequestDTO;
+import com.lean.news.dto.response.UserResponseDTO;
+import com.lean.news.model.entity.UserSec;
+import com.lean.news.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(path = "api/users")
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> create(@RequestBody @Valid CreateUserRequest createUserRequest) {
-
-        return userService.create(createUserRequest);
+    @GetMapping/*(produces = MediaType.APPLICATION_JSON_VALUE)*/
+    public ResponseEntity<List> getAllUsers() {
+        List<UserResponseDTO> users = userService.findAll();
+        return ResponseEntity.ok().body(users);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ListUsersResponse> listAllUsers() {
-        return ResponseEntity.ok().body(userService.listUsers());
+    @GetMapping("/{id}")
+    public ResponseEntity getUserById(@PathVariable Long id){
+        Optional<UserSec> user = userService.findUserById(id);
+        return user.map(ResponseEntity::ok)
+                .orElseGet(()->ResponseEntity.notFound().build());
     }
 
-    @GetMapping(value = "/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> get() {
-        return ResponseEntity.ok().body(userService.getUserLogged());
+    @PostMapping/*(consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)*/
+    public ResponseEntity createUser(@RequestBody @Valid UserRequestDTO userRequestDTO) {
+        UserResponseDTO newUser = userService.save(userRequestDTO);
+        return ResponseEntity.ok(newUser);
     }
 
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    @PutMapping("/{id}")
+    public ResponseEntity updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO){
+        UserResponseDTO updatedUser = userService.update(id, userRequestDTO);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteUser(@PathVariable Long id) {
         userService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("User successfully deleted");
     }
 
-    @PatchMapping(value = "/{id}",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponse> update(@PathVariable String id, @Valid @RequestBody UpdateUserRequest updateUserRequest) {
-        UserResponse userResponse = userService.update(id, updateUserRequest);
-        return ResponseEntity.ok().body(userResponse);
-    }
 
 }

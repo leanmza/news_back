@@ -1,8 +1,8 @@
 package com.lean.news;
 
 import com.lean.news.enums.Rol;
-import com.lean.news.model.entity.User;
-import com.lean.news.model.repository.UserRepository;
+import com.lean.news.model.entity.UserSec;
+import com.lean.news.repository.IUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class UserSeeder implements CommandLineRunner {
 //crea por única vez un usuario ADMIN si en la tabla de usuarios de la base de datos no hay ninguna entrada
     @Autowired
-    UserRepository userRepository;
+IUserRepository IUserRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(UserSeeder.class);
 
@@ -22,18 +22,18 @@ public class UserSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
 
-        if (userRepository.count() == 0) {
+        if (IUserRepository.count() == 0) {
 
             String encryptPass = new BCryptPasswordEncoder().encode("123");
-            User admin = new User();
+            UserSec admin = new UserSec();
             admin.setName("admin");
             admin.setLastName("admin");
             admin.setEmail("admin@gmail.com");
             admin.setPassword(encryptPass);
-            admin.setRol(Rol.ADMIN);
-            admin.setActive(true);
+//            admin.setRol(Rol.ADMIN);
+            admin.setEnabled(true);
 
-            userRepository.save(admin);
+            IUserRepository.save(admin);
 
             logger.info("user cargado");
         }

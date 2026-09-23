@@ -3,8 +3,8 @@ package com.lean.news.service;
 
 import com.lean.news.model.entity.Category;
 import com.lean.news.model.mapper.CategoryMapper;
-import com.lean.news.model.repository.CategoryRepository;
-import com.lean.news.rest.response.CategoryResponse;
+import com.lean.news.repository.ICategoryRepository;
+import com.lean.news.dto.response.CategoryResponse;
 import com.lean.news.service.interfaces.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,14 +17,14 @@ import java.util.Optional;
 public class CategoryService implements ICategoryService {
 
     @Autowired
-    CategoryRepository categoryRepository;
+    ICategoryRepository ICategoryRepository;
 
     @Autowired
     CategoryMapper categoryMapper;
 
     @Override
     public List<CategoryResponse> findAll() {
-        List<Category> listCategoryEntities = categoryRepository.findAll();
+        List<Category> listCategoryEntities = ICategoryRepository.findAll();
 
         return categoryMapper.toListCategoryResponse(listCategoryEntities);
 
@@ -32,9 +32,9 @@ public class CategoryService implements ICategoryService {
 
 
     public Category findCategoryByName(String name) {
-        Optional<Category> categoryOptional = categoryRepository.findByName(name);
+        Optional<Category> categoryOptional = ICategoryRepository.findByName(name);
 
-        return categoryRepository.findByName(name)
+        return ICategoryRepository.findByName(name)
                 .orElseThrow(() ->
                         new EntityNotFoundException("No existe la categoría"));
 

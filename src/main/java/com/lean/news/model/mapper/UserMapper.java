@@ -1,17 +1,20 @@
 package com.lean.news.model.mapper;
 
-import com.lean.news.model.entity.User;
-import com.lean.news.rest.request.CreateUserRequest;
-import com.lean.news.rest.response.UserResponse;
+import com.lean.news.dto.request.UserRequestDTO;
+import com.lean.news.dto.response.UserResponseDTO;
+import com.lean.news.model.entity.UserSec;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    User toUser (CreateUserRequest createUserRequest);
 
-    UserResponse toUserResponse(User user);
+    @Mapping(target = "rolesList", ignore = true)
+    UserSec toUser (UserRequestDTO userRequestDTO);
 
-    List<UserResponse> toListUserResponse (List<User> users);
+    UserResponseDTO toUserResponse(UserSec userSec);
+
+    List<UserResponseDTO> toListUserResponse (List<UserSec> userSecs);
 }

@@ -3,8 +3,8 @@ package com.lean.news.model.mapper;
 
 import com.lean.news.model.entity.Category;
 import com.lean.news.model.entity.Publication;
-import com.lean.news.rest.request.CreatePublicationRequest;
-import com.lean.news.rest.response.PublicationResponse;
+import com.lean.news.dto.request.CreatePublicationRequest;
+import com.lean.news.dto.response.PublicationResponse;
 import org.mapstruct.Mapper;
 
 import java.util.List;
