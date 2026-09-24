@@ -77,6 +77,10 @@ public class UserService implements IUserService {
         userRepo.save(deletedUserSec);
     }
 
+    @Override
+    public Optional<UserSec> findByUsername(String username) {
+        return userRepo.findUserEntityByUsername(username);
+    }
 
     private Set<Role> cargarListaRoles(@NotEmpty List<Long> rolesList) {
         Set<Role> rolesListSet = new HashSet<>();

@@ -19,7 +19,7 @@ public interface IUserService {
 
     void delete(Long id);
 
-//    public Optional<User> findByEmail(String email);
+     Optional<UserSec> findByUsername(String username);
 
     String encriptPassword(String password);
 

@@ -5,7 +5,6 @@ com\lean\news\config\filter\JwtTokenValidator.class
 com\lean\news\service\ImageService.class
 com\lean\news\ServletInitializer.class
 com\lean\news\service\interfaces\IPublicationService.class
-com\lean\news\dto\request\UpdatePublicationRequest.class
 com\lean\news\model\mapper\CategoryMapper.class
 com\lean\news\service\interfaces\ICategoryService.class
 com\lean\news\NewsApplication.class
@@ -19,11 +18,11 @@ com\lean\news\exception\EntityNotFound.class
 com\lean\news\dto\response\PublicationResponse.class
 com\lean\news\service\interfaces\IRoleService.class
 com\lean\news\model\mapper\UserMapperImpl.class
-com\lean\news\dto\request\CreatePublicationRequest.class
 com\lean\news\dto\response\CategoryResponse.class
 com\lean\news\service\CloudinaryService.class
 com\lean\news\controller\ErrorsController.class
 com\lean\news\dto\request\AuthLoginRequestDTO.class
+com\lean\news\dto\request\PublicationRequestDTO.class
 com\lean\news\model\entity\Category$CategoryBuilder.class
 com\lean\news\enums\Rol.class
 com\lean\news\CategorySeeder.class

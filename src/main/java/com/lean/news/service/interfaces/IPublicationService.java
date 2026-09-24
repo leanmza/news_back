@@ -1,39 +1,37 @@
 package com.lean.news.service.interfaces;
 
-import com.lean.news.dto.request.CreatePublicationRequest;
-import com.lean.news.dto.request.UpdatePublicationRequest;
+import com.lean.news.dto.request.PublicationRequestDTO;
 import com.lean.news.dto.response.ListPublicationResponse;
 import com.lean.news.dto.response.PublicationResponse;
+import com.lean.news.model.entity.Publication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface IPublicationService {
-    ResponseEntity<?> create (CreatePublicationRequest createPublicationRequest, List<MultipartFile> images);
 
+    List<PublicationResponse> findAllActivePublications();
+
+
+    PublicationResponse findPublicationById(Long id);
+
+    PublicationResponse save(PublicationRequestDTO publicationRequestDTO, List<MultipartFile> images);
+
+    PublicationResponse update(Long id, PublicationRequestDTO publicationRequestDTO, List<MultipartFile> images);
+    
     void delete (Long id);
 
+    List<PublicationResponse> findAllPublications();
+
+    List<PublicationResponse> findLastPublications();
+
     void changeDeletedStatus(Long id);
-
-    ListPublicationResponse listAllPublications();
-
-
-    ListPublicationResponse listActivePublications();
-
-    ListPublicationResponse listLastPublications();
-
-    ResponseEntity<?> update(Long id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images);
-
-   ListPublicationResponse findByTitle(String title);
-
-   ListPublicationResponse findByAuthor(String author);
-
-    PublicationResponse updateView(Long id);
-
-    PublicationResponse getOnePublicationById(Long id);
 
     void deleteImage (Long imageUrl);
 
     ResponseEntity<?> arrangeImages(Long id, List<Long> idList);
+
+    Publication addView(Publication publication);
+
 }

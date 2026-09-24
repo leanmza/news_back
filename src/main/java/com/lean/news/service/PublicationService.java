@@ -1,17 +1,19 @@
 package com.lean.news.service;
 
 
+import com.lean.news.dto.request.PublicationRequestDTO;
 import com.lean.news.exception.EntityNotFound;
 import com.lean.news.model.entity.Category;
 import com.lean.news.model.entity.Image;
 import com.lean.news.model.entity.Publication;
 import com.lean.news.model.mapper.PublicationMapper;
 import com.lean.news.repository.IPublicationRepository;
-import com.lean.news.dto.request.CreatePublicationRequest;
-import com.lean.news.dto.request.UpdatePublicationRequest;
 import com.lean.news.dto.response.ListPublicationResponse;
 import com.lean.news.dto.response.PublicationResponse;
+import com.lean.news.service.interfaces.IAuthService;
+import com.lean.news.service.interfaces.ICategoryService;
 import com.lean.news.service.interfaces.IPublicationService;
+import com.lean.news.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,16 +29,19 @@ import java.util.stream.Collectors;
 public class PublicationService implements IPublicationService {
 
     @Autowired
-    private IPublicationRepository IPublicationRepository;
+    private IPublicationRepository publicationRepo;
 
     @Autowired
     private PublicationMapper publicationMapper;
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
     @Autowired
-    private CategoryService categoryService;
+    private ICategoryService categoryService;
+
+    @Autowired
+    private IAuthService authService;
 
     @Autowired
     CloudinaryService cloudinaryService;
@@ -44,144 +49,81 @@ public class PublicationService implements IPublicationService {
     @Autowired
     ImageService imageService;
 
+    @Override
+    public List<PublicationResponse> findAllActivePublications() {
+        List<Publication> listPublications = publicationRepo.findActivePublications();
+        return publicationMapper.toListPublicationResponse(listPublications);
+    }
 
     @Override
-    public ResponseEntity<?> create(CreatePublicationRequest createPublicationRequest, List<MultipartFile> images) {
+    public PublicationResponse findPublicationById(Long id) {
+        Publication publication = findById(id);
+        addView(publication);
+        return publicationMapper.toPublicationResponse(publication);
 
-        Publication publication = publicationMapper.toPublication(createPublicationRequest);
-        Category category = categoryService.findCategoryByName(createPublicationRequest.getCategory());
+    }
 
-        publication.setCategory(category);
-        publication.setViews(0L);
-        publication.setDeleted(false);
+    @Override
+    public PublicationResponse save(PublicationRequestDTO publicationRequestDTO, List<MultipartFile> images) {
+
+        Publication publication = publicationMapper.toPublication(publicationRequestDTO);
+
+        publication.setCategory(getCategory(publicationRequestDTO.getCategory()));
         publication.setCreationDate(LocalDateTime.now());
-//        publication.setAuthor(userService.getUserLogged());
-        IPublicationRepository.save(publication);
+
+        publication.setAuthor(userService.findByUsername(authService.getUserName())
+                .orElseThrow(() -> new RuntimeException("User doesn't exist")));
+
+        publicationRepo.save(publication);
 
         List<Image> imagesList = imageHandler(images, publication);
 
-
-        PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publication);
         publication.setImages(imagesList);
-        return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
-    }
-
-
-    @Override
-    public void delete(Long id) {
-        IPublicationRepository.deleteById(id);
+        return publicationMapper.toPublicationResponse(publication);
     }
 
     @Override
-    public void changeDeletedStatus(Long id) {
-        Publication publication = findById(id);
-        if (publication.isDeleted()) {
-            publication.setDeleted(false);
-        } else {
-            publication.setDeleted(true);
-        }
-        IPublicationRepository.save(publication);
+    public PublicationResponse update(Long id, PublicationRequestDTO publicationRequestDTO, List<MultipartFile> images) {
 
-    }
+        Publication updatedPublication = findById(id);
 
-    @Override
-    public ListPublicationResponse listAllPublications() {
-        List<Publication> listPublications = IPublicationRepository.findAll();
-        if (listPublications.isEmpty()) {
-            throw new EntityNotFound("No hay publicaciones");
-        } else {
-            ListPublicationResponse listPublicationResponse = new ListPublicationResponse();
-            listPublicationResponse.setPublications(publicationMapper.toListPublicationResponse(listPublications));
-            return listPublicationResponse;
-        }
-    }
+        updatedPublication.setTitle(publicationRequestDTO.getTitle());
+        updatedPublication.setHeader(publicationRequestDTO.getHeader());
+        updatedPublication.setBody(publicationRequestDTO.getBody());
+        updatedPublication.setCategory(getCategory(publicationRequestDTO.getCategory()));
 
-    @Override
-    public ListPublicationResponse listLastPublications() {
-        List<Publication> listPublications = IPublicationRepository.findLastPublicationByCategory();
-        if (listPublications.isEmpty()) {
-            throw new EntityNotFound("No hay publicaciones");
-        } else {
-            ListPublicationResponse listPublicationResponse = new ListPublicationResponse();
-            listPublicationResponse.setPublications(publicationMapper.toListPublicationResponse(listPublications));
-            return listPublicationResponse;
-        }
-    }
+        publicationRepo.save(updatedPublication);
 
-    @Override
-    public ListPublicationResponse listActivePublications() {
-        List<Publication> listPublications = IPublicationRepository.findActivePublications();
-        if (listPublications.isEmpty()) {
-            throw new EntityNotFound("No hay publicaciones");
-        } else {
-            ListPublicationResponse listPublicationResponse = new ListPublicationResponse();
-            listPublicationResponse.setPublications(publicationMapper.toListPublicationResponse(listPublications));
-            return listPublicationResponse;
-        }
-    }
-
-
-    @Override
-    public ResponseEntity<?> update(Long id, UpdatePublicationRequest updatePublicationRequest, List<MultipartFile> images) {
-        //Edita una publicación.
-        Publication publication = findById(id);
-        Publication publicationUpdate = updateValues(updatePublicationRequest, publication);
-
-        IPublicationRepository.save(publicationUpdate);
-
-        PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publication);
+        PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(updatedPublication);
         if (images != null) {
-            List<Image> imageList = imageHandler(images, publication);
+            List<Image> imageList = imageHandler(images, updatedPublication);
             publicationResponse.setImages(imageList);
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
+        return publicationResponse;
     }
 
     @Override
-    public ListPublicationResponse findByTitle(String title) {
-        List<Publication> listPublications = IPublicationRepository.findTitleByTitle(title);
-        if (listPublications.isEmpty()) {
-            throw new EntityNotFound("No hay publicaciones con ese título");
-        } else {
-            ListPublicationResponse listPublicationResponse = new ListPublicationResponse();
-            listPublicationResponse.setPublications(publicationMapper.toListPublicationResponse(listPublications));
-            return listPublicationResponse;
-        }
+    public void delete(Long id) {
+        publicationRepo.deleteById(id);
     }
 
     @Override
-    public ListPublicationResponse findByAuthor(String author) {
-        List<Publication> listPublications = IPublicationRepository.findByAuthor(author);
-        if (listPublications.isEmpty()) {
-            throw new EntityNotFound("No hay publicaciones con ese autor");
-        } else {
-            ListPublicationResponse listPublicationResponse = new ListPublicationResponse();
-            listPublicationResponse.setPublications(publicationMapper.toListPublicationResponse(listPublications));
-            return listPublicationResponse;
-        }
-
+    public List<PublicationResponse> findLastPublications() {
+        List<Publication> listPublications = publicationRepo.findLastPublicationByCategory();
+        return publicationMapper.toListPublicationResponse(listPublications);
     }
 
     @Override
-    public PublicationResponse updateView(Long id) {
-        Publication publication = findById(id);
-        Publication publicationUpdate = addView(publication);
-        IPublicationRepository.save(publication);
-        return publicationMapper.toPublicationResponse(publicationUpdate);
-    }
-
-    @Override
-    public PublicationResponse getOnePublicationById(Long id) {
-        Publication publication = findById(id);
-        return publicationMapper.toPublicationResponse(publication);
+    public List<PublicationResponse> findAllPublications() {
+        List<Publication> listPublications = publicationRepo.findAll();
+        return publicationMapper.toListPublicationResponse(listPublications);
     }
 
     @Override
     public void deleteImage(Long imageId) {
         imageService.delete(imageId);
     }
-
 
     @Override
     public ResponseEntity<?> arrangeImages(Long id, List<Long> imagesId) {
@@ -191,7 +133,7 @@ public class PublicationService implements IPublicationService {
         // Obtener la lista de imágenes actual de la publicación
         List<Image> currentImages = publication.getImages();
         System.out.println("antes de ordenar");
-        for(Image image : currentImages){
+        for (Image image : currentImages) {
             System.out.println(image);
         }
         // Mapa para acceder rápidamente a las imágenes por su ID
@@ -210,92 +152,41 @@ public class PublicationService implements IPublicationService {
         }
 
         System.out.println("despues de ordenar");
-        for(Image image : currentImages){
+        for (Image image : currentImages) {
             System.out.println(image);
         }
         publication.setImages(currentImages);
 
         System.out.println("en publication");
-        for(Image image : publication.getImages()){
+        for (Image image : publication.getImages()) {
             System.out.println(image);
         }
 
-        IPublicationRepository.save(publication);
+        publicationRepo.save(publication);
         PublicationResponse publicationResponse = publicationMapper.toPublicationResponse(publication);
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationResponse);
     }
 
-/*    private List<Image> getImageList(List<String> idList, Publication publication) {
+    @Override
+    public void changeDeletedStatus(Long id) {
+        Publication publication = findById(id);
+        publication.setDeleted(!publication.isDeleted());
+        publicationRepo.save(publication);
+    }
 
-        List<Image> imageList = new ArrayList<>();
-
-        for (Long idImage : idList) {
-
-            Image oldImage = imageService.getOne(idImage).get();
-
-            Image newImage = new Image();
-            newImage.setName(oldImage.getName());
-            newImage.setImageUrl(oldImage.getImageUrl());
-            newImage.setCloudinaryId(oldImage.getCloudinaryId());
-            newImage.setPublication(publication);
-
-            deleteImage(idImage);
-
-            imageService.save(newImage);
-
-            imageList.add(newImage);
-        }
-
-        return imageList;
-    }*/
-
-    private Publication addView(Publication publication) {
+    @Override
+    public Publication addView(Publication publication) {
         publication.setViews(publication.getViews() + 1);
         return publication;
     }
 
-
     private Publication findById(Long id) {
-        Optional<Publication> optionalPublication = IPublicationRepository.findById(id);
-        if (optionalPublication.isEmpty()) {
-            throw new EntityNotFound("La publicación no existe");
-        } else {
-            return optionalPublication.get();
-        }
+        Optional<Publication> publication = publicationRepo.findById(id);
+        return publication.orElseThrow(() -> new RuntimeException("Publication not found"));
     }
 
-
-    private Publication updateValues(UpdatePublicationRequest updatePublicationRequest, Publication publication) {
-        String title = updatePublicationRequest.getTitle();
-        if (title != null) {
-            publication.setTitle(title);
-        }
-
-        String header = updatePublicationRequest.getHeader();
-        if (header != null){
-            publication.setHeader(header);
-        }
-
-        String body = updatePublicationRequest.getBody();
-        if (body != null) {
-            publication.setBody(body);
-        }
-
-        String category = updatePublicationRequest.getCategory();
-        if (category != null) {
-
-            publication.setCategory(getCategory(category));
-        }
-
-
-        return publication;
-    }
-
-    private Category getCategory(String name) {
-
-        Category category = categoryService.findCategoryByName(name);
-
-        return category;
+    private Category getCategory(Long id) {
+        return categoryService.findCategoryById(id);
     }
 
     private List<Image> imageHandler(List<MultipartFile> images, Publication publication) {

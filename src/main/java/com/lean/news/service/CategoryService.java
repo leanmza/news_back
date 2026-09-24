@@ -17,27 +17,33 @@ import java.util.Optional;
 public class CategoryService implements ICategoryService {
 
     @Autowired
-    ICategoryRepository ICategoryRepository;
+    ICategoryRepository categoryRepo;
 
     @Autowired
     CategoryMapper categoryMapper;
 
     @Override
-    public List<CategoryResponse> findAll() {
-        List<Category> listCategoryEntities = ICategoryRepository.findAll();
+    public List<CategoryResponse> findAllCategories() {
+        List<Category> listCategoryEntities = categoryRepo.findAll();
 
         return categoryMapper.toListCategoryResponse(listCategoryEntities);
 
     }
 
-
+    @Override
     public Category findCategoryByName(String name) {
-        Optional<Category> categoryOptional = ICategoryRepository.findByName(name);
+        Optional<Category> categoryOptional = categoryRepo.findByName(name);
 
-        return ICategoryRepository.findByName(name)
+        return categoryRepo.findByName(name)
                 .orElseThrow(() ->
                         new EntityNotFoundException("No existe la categoría"));
 
+    }
+
+    @Override
+    public Category findCategoryById(Long id) {
+       Category category = categoryRepo.findById(id).orElseThrow(()->new EntityNotFoundException("Category not found"));
+        return category;
     }
 }
 

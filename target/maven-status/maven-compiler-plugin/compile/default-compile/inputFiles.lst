@@ -21,6 +21,7 @@ D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\controller\ErrorsController.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\dto\response\PublicationResponse.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\model\mapper\PublicationMapper.java
+D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\dto\request\PublicationRequestDTO.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\dto\response\CategoryResponse.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\service\PermissionService.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\model\mapper\UserMapper.java
@@ -29,7 +30,6 @@ D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\service\interfaces\IAuthService.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\controller\AuthenticationController.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\repository\IRoleRepository.java
-D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\dto\request\CreatePublicationRequest.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\model\entity\JwtProperties.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\repository\IUserRepository.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\repository\IPublicationRepository.java
@@ -49,7 +49,6 @@ D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\exception\ValidationException.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\model\entity\UserSec.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\controller\PermissionController.java
-D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\dto\request\UpdatePublicationRequest.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\exception\EntityNotFound.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\service\UserService.java
 D:\Backup\Documents\Proyectos Programacion\API\news_back\src\main\java\com\lean\news\utils\JwtUtils.java

@@ -6,9 +6,6 @@ import java.util.Map;
 
 public interface IAuthService {
 
-    ResponseEntity<?> userDetail(Map<String, String> credentials);
-
-    void credentialValidation(String email, String password);
-
+    String getUserName();
 
 }

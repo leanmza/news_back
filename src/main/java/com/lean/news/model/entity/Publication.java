@@ -69,10 +69,10 @@ public class Publication {
 
     @NotNull
     @Column( nullable = false)
-    private boolean deleted;
+    private boolean deleted = false;
 
     @NotNull
     @Column(nullable = false)
-    private Long views;
+    private Long views = 0L;
 
 }

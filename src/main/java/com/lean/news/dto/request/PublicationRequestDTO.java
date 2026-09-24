@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
-public class CreatePublicationRequest {
+public class PublicationRequestDTO {
 
     @NotNull(message = "El título no puede ser nulo")
     @NotBlank(message = "El título no puede estar en blanco")
@@ -25,7 +25,6 @@ public class CreatePublicationRequest {
     private String header;
 
     @NotNull(message = "La categoría no puede ser nula")
-    @NotBlank(message = "La categoría no puede estar en blanco")
-    private String category;
+    private Long category;
 
 }

@@ -4,8 +4,8 @@ import com.lean.news.dto.response.CategoryResponse;
 
 import com.lean.news.service.interfaces.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,14 +14,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
+@PreAuthorize("permitAll()")
 public class CategoryController {
 
     @Autowired
-    ICategoryService categoryService;
+    private ICategoryService categoryService;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List> listCategories() {
-        List<CategoryResponse> categories = categoryService.findAll();
+    @GetMapping
+    public ResponseEntity<List> getAllCategories() {
+        List<CategoryResponse> categories = categoryService.findAllCategories();
         return ResponseEntity.ok(categories);
     }
 }

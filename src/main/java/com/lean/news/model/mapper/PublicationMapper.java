@@ -3,7 +3,7 @@ package com.lean.news.model.mapper;
 
 import com.lean.news.model.entity.Category;
 import com.lean.news.model.entity.Publication;
-import com.lean.news.dto.request.CreatePublicationRequest;
+import com.lean.news.dto.request.PublicationRequestDTO;
 import com.lean.news.dto.response.PublicationResponse;
 import org.mapstruct.Mapper;
 
@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface PublicationMapper {
 
-    Publication toPublication(CreatePublicationRequest createPublicationRequest);
+    Publication toPublication(PublicationRequestDTO publicationRequestDTO);
 
     List<PublicationResponse> toListPublicationResponse(List<Publication> publicationList);
 

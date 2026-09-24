@@ -4,6 +4,7 @@ import com.lean.news.dto.request.AuthLoginRequestDTO;
 import com.lean.news.dto.response.AuthResponseDTO;
 import com.lean.news.model.entity.UserSec;
 import com.lean.news.repository.IUserRepository;
+import com.lean.news.service.interfaces.IAuthService;
 import com.lean.news.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserDetailsServiceImp implements UserDetailsService {
+public class UserDetailsServiceImp implements UserDetailsService, IAuthService {
 
 
     @Autowired
@@ -80,5 +81,11 @@ public class UserDetailsServiceImp implements UserDetailsService {
             throw new BadCredentialsException("Invalid password");
         }
         return new UsernamePasswordAuthenticationToken(username, userDetails.getPassword(), userDetails.getAuthorities());
+    }
+
+    @Override
+    public String getUserName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
     }
 }

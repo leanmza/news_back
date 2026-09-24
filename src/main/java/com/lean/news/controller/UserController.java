@@ -6,6 +6,7 @@ import com.lean.news.model.entity.UserSec;
 import com.lean.news.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,38 +16,43 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping(path = "api/users")
+@PreAuthorize("denyAll()")
 public class UserController {
 
     @Autowired
     private IUserService userService;
 
-    @GetMapping/*(produces = MediaType.APPLICATION_JSON_VALUE)*/
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<List> getAllUsers() {
         List<UserResponseDTO> users = userService.findAll();
         return ResponseEntity.ok().body(users);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity getUserById(@PathVariable Long id){
         Optional<UserSec> user = userService.findUserById(id);
         return user.map(ResponseEntity::ok)
                 .orElseGet(()->ResponseEntity.notFound().build());
     }
 
-    @PostMapping/*(consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)*/
+    @PostMapping
+    @PreAuthorize("permitAll()")
     public ResponseEntity createUser(@RequestBody @Valid UserRequestDTO userRequestDTO) {
         UserResponseDTO newUser = userService.save(userRequestDTO);
         return ResponseEntity.ok(newUser);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO){
         UserResponseDTO updatedUser = userService.update(id, userRequestDTO);
         return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity deleteUser(@PathVariable Long id) {
         userService.delete(id);
         return ResponseEntity.ok("User successfully deleted");

@@ -51,7 +51,7 @@ public class PublicationResponse {
 
     public void setAuthor(UserSec author){
         if (author != null){
-            this.author = author.getName();
+            this.author = author.getUsername();
         }
     }
 

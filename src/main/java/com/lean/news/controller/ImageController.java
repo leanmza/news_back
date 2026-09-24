@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("api/image")
+@PreAuthorize("denyAll()")
 public class ImageController {
 
     @Autowired
@@ -29,12 +31,14 @@ public class ImageController {
     CloudinaryService cloudinaryService;
 
     @GetMapping("/list")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<List<Image>> list() {
         List<Image> list = imageService.list();
         return new ResponseEntity(list, HttpStatus.OK);
     }
 
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> get(@RequestParam Long id) {
         System.out.println(id);
 
@@ -42,6 +46,7 @@ public class ImageController {
     }
 
     @GetMapping("/{fileId}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> getImage(@PathVariable Long fileId) throws IOException {
         Image imageData = imageService.getOne(fileId).get();
         return ResponseEntity.status(HttpStatus.OK).body(imageData);
@@ -49,6 +54,7 @@ public class ImageController {
     }
 
     @PostMapping("/upload")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> upload(@RequestParam("image") MultipartFile multipartFile) throws IOException {
         BufferedImage bi = ImageIO.read(multipartFile.getInputStream());
         if (bi == null) {
@@ -66,6 +72,7 @@ public class ImageController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) throws IOException {
         if (!imageService.exists(id)) {
             return new ResponseEntity("No existe la imagen", HttpStatus.NOT_FOUND);
